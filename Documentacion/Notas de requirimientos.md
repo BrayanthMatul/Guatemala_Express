@@ -157,7 +157,8 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
 - Iniciar sesion
 
 - Mi perfil 
-  - Consultar y editar perfil
+  - Consultar perfil
+  - Editar perfil
   - Cerrar sesion
 
 - Viajes
@@ -167,7 +168,7 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
   - Consultar rutas
 
 - Alquilar bus
-  - Alquilar bus
+  - Solicitar un alquiler
   - Pagar monto de alquiler
   - Consultar solicitudes de alquiler
 
@@ -182,8 +183,8 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
 
 - Administradores de sistema
   - Registrar administrador de sistema
-  - Lista de administradores de sistemas
-  - Desactivar administrador
+  - Lista de administradores de sistema
+  - Activar / Desactivar administrador
 
 - Sucursales
   - Registrar sucursal
@@ -194,13 +195,13 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
   - Registrar administrador sucursal
   - Editar administrador sucursal
   - Listar administradores de sucursales
-  - Desactivar administrador de sucursal
+  - Activar / Desactivar administrador de sucursal
 
 - Configuraciones (Administrador sistema)
-  - Configurar monto de depreciacion / Kilometro
+  - Configurar monto de depreciacion por Kilometro
  
 - Reportes
-  - Ganancias en un intervalo de tiempo
+  - Ganancias
   - Rutas mas demandadas
   - Costos operativos
   - Mapa de ruta
@@ -249,8 +250,6 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
   - Ingreso por venta de boletos
   - Ingreso por alquiler de buses
   - Depreciacion por bus
-  - Lista de buses
-  - Lista de choferes
 
 ## Chofer
 
@@ -259,7 +258,7 @@ Idea principal: Gestion de flota de buses de transporte extraurbano en Guatemala
   - Registrar salida
  
 - Viajes privados 
-  - Ver viajes asigandoos
+  - Ver viajes asigandos
   - Registrar salida
 
 
