@@ -553,34 +553,3 @@ ___
 | Actores: | Usuario Chofer, Aplicación |
 | Descripción: | El usuario desplegará el menú "Viajes Privados" y seleccionará "Registrar salida"; la aplicación lo llevará un formulario donde podra registrar un registro de salida.  Si todos los campos son correctos, se guardara el registro de salida. |
 | Tipo: | Primario |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

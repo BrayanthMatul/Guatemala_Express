@@ -32,7 +32,7 @@ ___
 
 | Número | CU004 |
 | :--- | :---: |
-| Caso de Uso: | Gestinar viajes regulares |
+| Caso de Uso: | Gestionar viajes regulares |
 | Actores: | Usuario registrado, Aplicación |
 | Descripción: | El usuario tendra acceso a toda la informacion realacionada con viajes y podra comprar boletos.  |
 | Tipo: | Primario |
@@ -127,7 +127,7 @@ ___
 
 | Número | CU014 |
 | :--- | :---: |
-| Caso de Uso: | Gestionar ruta |
+| Caso de Uso: | Gestionar rutas |
 | Actores: | Usuario Administrador Sucursal, Aplicación |
 | Descripción: | Un administrador de sucursal realiza acciones como registrar, editar y ver rutas, para la eliminacion de rutas hay restricciones a tomar en cuenta.|
 | Tipo: | Primario |
@@ -173,7 +173,7 @@ ___
 
 | Número | CU019 |
 | :--- | :---: |
-| Caso de Uso: | Registrar gasto taller |
+| Caso de Uso: | Registrar gasto de taller |
 | Actores: | Usuario Administrador Sucursal, Aplicación |
 | Descripción: | Un administrador de sucursal registrara los gastos que tuvo un bus en el taller.  |
 | Tipo: | Primario |
