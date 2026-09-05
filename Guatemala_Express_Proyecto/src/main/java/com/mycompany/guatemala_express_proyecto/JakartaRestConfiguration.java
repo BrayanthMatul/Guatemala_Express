@@ -1,4 +1,4 @@
-package com.mycompany.guatemala_express;
+package com.mycompany.guatemala_express_proyecto;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
