@@ -1,1 +1,7 @@
 /Guatemala_Express_Proyecto/target/
+
+node_modules/
+
+npm-debug.log*
+
+
