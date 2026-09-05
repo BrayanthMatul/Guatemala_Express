@@ -1,0 +1,13 @@
+Lista de Comandos
+
+Ingresar a MariaDB
+
+mariadb - u nombre -p
+
+
+Configurar tailwind
+
+cd ruta/del/proyecto
+git pull
+npm ci
+npx @tailwindcss/cli -i ./src/main/tailwind/input.css -o ./src/main/webapp/css/tailwind.css --watch
