@@ -1,9 +1,9 @@
 CREATE DATABASE IF NOT EXISTS guatemala_express;
 
-CREATE USER IF NOT EXISTS 'guatemala_express'@'localhost'
+CREATE USER IF NOT EXISTS 'proyecto_1'@'localhost'
 IDENTIFIED BY '123';
 
-GRANT ALL PRIVILEGES ON guatemala_express.* TO 'guatemala_express'@'localhost';
+GRANT ALL PRIVILEGES ON guatemala_express.* TO 'proyecto_1'@'localhost';
 FLUSH PRIVILEGES;
 
 USE guatemala_express;
