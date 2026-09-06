@@ -10,8 +10,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <jsp:include page="/includes/recursos.jsp"/>
     </head>
     <body>
-        <h1>No tiene acceso a esta pagina</h1>
+        <h1>Error</h1>
+        <h2>Acceso denegado</h2>
+        <p>No tiene acceso a la siguiente pagina</p>
     </body>
 </html>
