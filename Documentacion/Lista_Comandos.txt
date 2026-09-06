@@ -11,3 +11,13 @@ cd ruta/del/proyecto
 git pull
 npm ci
 npx @tailwindcss/cli -i ./src/main/tailwind/input.css -o ./src/main/webapp/css/tailwind.css --watch
+
+Colores
+
+gray-800
+gray-700
+gray-400
+slate-900
+Amarrillo amber-400
+blancon white
+
