@@ -14,7 +14,7 @@
     </head>
     <body class="min-h-screen px-4 py-8">
 
-        <main class="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl place-items-center">
+        <main class="mx-auto flex min-h-[calc(100vh-4rem)] w-full content-center justify-center">
             <section class="rounded-2xl p-8 shadow-2xl">
 
                 <h2 class="text-center text-2xl font-bold text-gray-800">
@@ -40,7 +40,8 @@
                                     <input
                                         id="Correo electrónico"
                                         name="correoElectronico"
-                                        type="text"
+                                        type="email"
+                                        title="Ingrese un formato de correo valido"
                                         value="${correoElectronico}"
                                         required
                                         placeholder="1234567890123"
@@ -87,6 +88,9 @@
                                         id="Nit"
                                         name="nit"
                                         type="text"
+                                        maxlength="20"
+                                        pattern="[0-9]+-?[0-9Kk]"
+                                        title="Ingrese un NIT valido, por ejemplo 1234567-8"
                                         value="${nit}"
                                         required
                                         placeholder="1234567890123"
@@ -110,7 +114,12 @@
                                         id="DPI"
                                         name="dpi"
                                         type="text"
+                                        inputmode="numeric"
+                                        pattern="[0-9]{13}"
+                                        minlength="13"
+                                        maxlength="13"
                                         value="${dpi}"
+                                        title="El DPI debe tener al menos 13 numeros"
                                         required
                                         placeholder="1234567890123"
                                         class="w-full rounded-lg border border-blue-200
@@ -157,8 +166,13 @@
                                     <input
                                         id="Telefono"
                                         name="telefono"
-                                        type="text"
-                                        value="${telefono}"
+                                        type="tel"
+                                        input="numeric"
+                                        pattern="[0-9]{8}"
+                                        minlength="8"
+                                        maxlength="8"
+                                        title="Debe ingresar un numero de 8 digitos"
+                                        value="${t1elefono}"
                                         required
                                         placeholder="1234567890123"
                                         class="w-full rounded-lg border border-blue-200
@@ -195,7 +209,7 @@
 
                     <jsp:include page="/includes/informacion.jsp"/>
                     
-                    <div class="mt-3 flex items-center justify-items-center  content-center justify-centerw-full">
+                    <div class="mt-3 flex items-center justify-center w-full">
                             <button
                                 type="submit"
                                 class="w-xs rounded-lg bg-amber-400 px-5 py-3
