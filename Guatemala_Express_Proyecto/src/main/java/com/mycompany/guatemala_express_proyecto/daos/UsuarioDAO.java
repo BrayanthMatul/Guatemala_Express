@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.enums.Rol;
-import com.mycompany.guatemala_express_proyecto.exceptions.UsuarioNoEncontradoException;
+import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
 import com.mycompany.guatemala_express_proyecto.util.ConexionDB;
 
@@ -21,7 +21,35 @@ import com.mycompany.guatemala_express_proyecto.util.ConexionDB;
  */
 public class UsuarioDAO {
 
-    public Optional<Usuario> obtenerUsuarioPorCorreo(String correo) throws UsuarioNoEncontradoException {
+    public int crearUsuario(Usuario usuario) throws NoGuardadoEnBDException {
+        String sql = "INSERT INTO usuario (nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql,
+                        PreparedStatement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, usuario.getNit());
+            preparedStatement.setString(2, usuario.getDpi());
+            preparedStatement.setString(3, usuario.getNombreCompleto());
+            preparedStatement.setString(4, usuario.getTelefono());
+            preparedStatement.setString(5, usuario.getDireccion());
+            preparedStatement.setString(6, usuario.getCorreoElectronico());
+            preparedStatement.setString(7, usuario.getContrasenia());
+            preparedStatement.setString(8, usuario.getRol().name());
+
+            preparedStatement.executeUpdate();
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new NoGuardadoEnBDException("Error al crear el usuario: " + e.getMessage());
+        }
+
+        return 0;
+    }
+
+    public Optional<Usuario> obtenerUsuarioPorCorreo(String correo) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE correo_electronico = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
                 PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
@@ -29,7 +57,8 @@ public class UsuarioDAO {
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setNombreCompleto(result.getString("nombre_completo"));
+                    usuario.setId(result.getInt("id"));
+                    usuario.setNit(result.getString("nit"));
                     usuario.setDpi(result.getString("dpi"));
                     usuario.setNombreCompleto(result.getString("nombre_completo"));
                     usuario.setTelefono(result.getString("telefono"));
@@ -44,7 +73,65 @@ public class UsuarioDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new UsuarioNoEncontradoException("Error al obtener el usuario por correo: " + e.getMessage());
+            throw new SQLException("Error al obtener el usuario por correo: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Usuario> obtenerUsuarioPorNit(String nit) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE nit = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, nit);
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                if (result.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(result.getInt("id"));
+                    usuario.setNit(result.getString("nit"));
+                    usuario.setDpi(result.getString("dpi"));
+                    usuario.setNombreCompleto(result.getString("nombre_completo"));
+                    usuario.setTelefono(result.getString("telefono"));
+                    usuario.setDireccion(result.getString("direccion"));
+                    usuario.setCorreoElectronico(result.getString("correo_electronico"));
+                    usuario.setContrasenia(result.getString("contrasenia"));
+                    usuario.setRol(Rol.valueOf(result.getString("rol")));
+                    usuario.setSaldo(result.getBigDecimal("saldo"));
+                    usuario.setEstado(result.getBoolean("estado"));
+                    Optional<Usuario> usuarioOptional = Optional.of(usuario);
+                    return usuarioOptional;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener el usuario por ID: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Usuario> obtenerUsuarioPorDpi(String dpi) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE dpi = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, dpi);
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                if (result.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(result.getInt("id"));
+                    usuario.setNit(result.getString("nit"));
+                    usuario.setDpi(result.getString("dpi"));
+                    usuario.setNombreCompleto(result.getString("nombre_completo"));
+                    usuario.setTelefono(result.getString("telefono"));
+                    usuario.setDireccion(result.getString("direccion"));
+                    usuario.setCorreoElectronico(result.getString("correo_electronico"));
+                    usuario.setContrasenia(result.getString("contrasenia"));
+                    usuario.setRol(Rol.valueOf(result.getString("rol")));
+                    usuario.setSaldo(result.getBigDecimal("saldo"));
+                    usuario.setEstado(result.getBoolean("estado"));
+                    Optional<Usuario> usuarioOptional = Optional.of(usuario);
+                    return usuarioOptional;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener el usuario por ID: " + e.getMessage());
         }
         return Optional.empty();
     }
