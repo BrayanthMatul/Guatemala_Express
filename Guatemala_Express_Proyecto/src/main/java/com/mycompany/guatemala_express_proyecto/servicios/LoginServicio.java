@@ -4,6 +4,7 @@
  */
 package com.mycompany.guatemala_express_proyecto.servicios;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;
@@ -27,7 +28,7 @@ public class LoginServicio {
 
     public Usuario iniciarSesion(String correo, String contrasenia)
             throws UsuarioNoEncontradoException, DatosIncompletosException, CredencialesInvalidasException,
-            UsuarioDesactivadoException {
+            UsuarioDesactivadoException, SQLException {
 
         if (datosVacios(correo, contrasenia)) {
             throw new DatosIncompletosException("El correo o la contraseña están vacíos.");
