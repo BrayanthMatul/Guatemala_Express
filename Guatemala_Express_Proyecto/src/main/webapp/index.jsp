@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Inicio</title>
         <link rel="stylesheet"
         <jsp:include page="/includes/recursos.jsp"/>
     </head>
@@ -105,7 +105,7 @@
                     <p class="mt-6 text-center text-sm text-gray-700">
                         ¿Todavía no tenés una cuenta?
 
-                        <a href="${pageContext.request.contextPath}/registro"
+                        <a href="${pageContext.request.contextPath}/crear_cuenta"
                         class="font-bold text-slate-900 hover:underline">
                             Crear cuenta
                         </a>
