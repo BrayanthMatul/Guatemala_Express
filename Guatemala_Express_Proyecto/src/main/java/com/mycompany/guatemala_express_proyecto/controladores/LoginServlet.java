@@ -5,6 +5,7 @@
 package com.mycompany.guatemala_express_proyecto.controladores;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import com.mycompany.guatemala_express_proyecto.exceptions.CredencialesInvalidasException;
 import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
@@ -30,9 +31,7 @@ public class LoginServlet extends HttpServlet {
         private final LoginServicio loginServicio = new LoginServicio();
 
         @Override
-        protected void doGet(
-                        HttpServletRequest request,
-                        HttpServletResponse response)
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
                         throws ServletException, IOException {
 
                 HttpSession session = request.getSession(false);
@@ -84,7 +83,8 @@ public class LoginServlet extends HttpServlet {
                 } catch (UsuarioNoEncontradoException
                                 | DatosIncompletosException
                                 | CredencialesInvalidasException
-                                | UsuarioDesactivadoException e) {
+                                | UsuarioDesactivadoException
+                                | SQLException e) {
 
                         HttpSession session = request.getSession();
                         session.setAttribute("mensajeFlash", e.getMessage());
