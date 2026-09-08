@@ -5,6 +5,12 @@
 package com.mycompany.guatemala_express_proyecto.controladores.generales.mi_perfil;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
+import com.mycompany.guatemala_express_proyecto.exceptions.UsuarioNoEncontradoException;
+import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
+import com.mycompany.guatemala_express_proyecto.servicios.generales.mi_perfil.ConsultarPerfilServicio;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "ConsultarPerfilServlet", urlPatterns = {"/perfil/informacion"})
 public class ConsultarPerfilServlet extends HttpServlet {
 
-    
+    private final ConsultarPerfilServicio consultarPerfilServicio = new ConsultarPerfilServicio();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -32,21 +38,18 @@ public class ConsultarPerfilServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        int usuarioId = (int) request.getSession().getAttribute("usuarioId");
+
+        try {
+            Usuario usuario = consultarPerfilServicio.obtenerUsuarioPorId(usuarioId);
+            usuario.setContrasenia("");
+            request.setAttribute("usuario", usuario);
+        } catch (SQLException | UsuarioNoEncontradoException e) {
+            request.setAttribute("error", e.getMessage());
+        }
+        
         request.getRequestDispatcher("/WEB-INF/views/generales/mi_perfil/consultar-perfil.jsp")
                 .forward(request, response);
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    }
-
 }

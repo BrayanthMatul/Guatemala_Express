@@ -49,6 +49,35 @@ public class UsuarioDAO {
         return 0;
     }
 
+    public Optional<Usuario> obtenerUsuarioPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE id = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                if (result.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(result.getInt("id"));
+                    usuario.setNit(result.getString("nit"));
+                    usuario.setDpi(result.getString("dpi"));
+                    usuario.setNombreCompleto(result.getString("nombre_completo"));
+                    usuario.setTelefono(result.getString("telefono"));
+                    usuario.setDireccion(result.getString("direccion"));
+                    usuario.setCorreoElectronico(result.getString("correo_electronico"));
+                    usuario.setContrasenia(result.getString("contrasenia"));
+                    usuario.setRol(Rol.valueOf(result.getString("rol")));
+                    usuario.setSaldo(result.getBigDecimal("saldo"));
+                    usuario.setEstado(result.getBoolean("estado"));
+                    Optional<Usuario> usuarioOptional = Optional.of(usuario);
+                    return usuarioOptional;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener el usuario por ID: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
+
     public Optional<Usuario> obtenerUsuarioPorCorreo(String correo) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE correo_electronico = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
