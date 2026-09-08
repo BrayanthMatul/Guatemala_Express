@@ -49,6 +49,8 @@ public class LoginServlet extends HttpServlet {
                                 request.setAttribute("correo", correo);
                                 session.removeAttribute("correoFlash");
                         }
+
+                        session.invalidate(); // Cierra la sesión después de mostrar el mensaje
                 }
 
                 request.getRequestDispatcher("/index.jsp")
