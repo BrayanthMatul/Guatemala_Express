@@ -61,7 +61,7 @@ public class CrearCuentaServlet extends HttpServlet {
 
         try {
             int idGenerado = registrarUsuarioServicio.crearUsuario(usuario);
-            request.getSession().setAttribute("idGenerado", idGenerado);
+            request.getSession().setAttribute("usuarioId", idGenerado);
             session.setAttribute("usuarioNombre", usuario.getNombreCompleto());
             session.setAttribute("rol", usuario.getRol());
             response.sendRedirect(request.getContextPath() + "/cliente/inicio");
