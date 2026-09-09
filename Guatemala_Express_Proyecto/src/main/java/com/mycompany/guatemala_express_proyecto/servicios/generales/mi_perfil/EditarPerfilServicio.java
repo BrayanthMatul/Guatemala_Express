@@ -29,16 +29,16 @@ public class EditarPerfilServicio {
     }
 
     public boolean actualizarPerfil(Usuario usuario)
-            throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException, UsuarioNoEncontradoException {
+            throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException,
+            UsuarioNoEncontradoException {
 
         Optional<Usuario> usuarioRegistrado = usuarioDAO.obtenerUsuarioPorId(usuario.getId());
 
-
-        if(usuarioRegistrado.isEmpty()) {
+        if (usuarioRegistrado.isEmpty()) {
             throw new UsuarioNoEncontradoException("Usuario con ID " + usuario.getId() + " no encontrado.");
         }
 
-        if (verificador.datosVacios(usuario)) {
+        if (verificador.datosVacios(usuario, false)) {
             throw new DatosIncompletosException("Por favor, complete todos los campos requeridos.");
         }
 
@@ -61,5 +61,5 @@ public class EditarPerfilServicio {
 
         return usuarioDAO.actualizarUsuario(usuario);
     }
-    
+
 }

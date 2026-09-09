@@ -27,44 +27,42 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author matul
  */
-@WebServlet(name = "EditarPerfil", urlPatterns = {"/perfil/editar"})
+@WebServlet(name = "EditarPerfil", urlPatterns = { "/perfil/editar" })
 public class EditarPerfilServlet extends HttpServlet {
 
-        private final EditarPerfilServicio editorPerfilServicio = new EditarPerfilServicio();
-        private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
+    private final EditarPerfilServicio editorPerfilServicio = new EditarPerfilServicio();
+    private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
 
-
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        
 
         if (session != null && session.getAttribute("edicion") != null) {
             datosFlashPerfilServicio.colocarDatosFlash(request, session);
             session.removeAttribute("edicion");
         } else {
-                UsuarioDAO usuarioDAO = new UsuarioDAO();
-                int idUsuario = (int) session.getAttribute("usuarioId");
-                Usuario usuario;
-                try {
-                        usuario = usuarioDAO.obtenerUsuarioPorId(idUsuario).get();
-                        colocarDatosUsuarioEnRequest(request, usuario);
-                } catch (SQLException e) {
-                        // Escenario improbable, ya que el usuario debería existir en la base de datos
-                }
-        
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            int idUsuario = (int) session.getAttribute("usuarioId");
+            Usuario usuario;
+            try {
+                usuario = usuarioDAO.obtenerUsuarioPorId(idUsuario).get();
+                colocarDatosUsuarioEnRequest(request, usuario);
+            } catch (SQLException e) {
+                // Escenario improbable, ya que el usuario debería existir en la base de datos
+            }
+
         }
 
         request.getRequestDispatcher("/WEB-INF/views/generales/mi_perfil/editar-pefil.jsp")
@@ -74,21 +72,23 @@ public class EditarPerfilServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-     Usuario usuario = construirUsuario(request);
+        Usuario usuario = construirUsuario(request);
         HttpSession session = request.getSession();
 
         try {
             editorPerfilServicio.actualizarPerfil(usuario);
+            session.setAttribute("exitoFlash", "Perfil actualizado exitosamente.");
             response.sendRedirect(request.getContextPath() + "/perfil/informacion");
-        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException | UsuarioNoEncontradoException e) {
+        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException
+                | UsuarioNoEncontradoException e) {
             session.setAttribute("mensajeFlash", e.getMessage());
             datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
             session.setAttribute("edicion", true);

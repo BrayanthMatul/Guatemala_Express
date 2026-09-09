@@ -22,7 +22,7 @@ public class VerificadorDatosUsuarioServicio {
         this.usuarioDAO = new UsuarioDAO();
     }
 
-        public boolean datosVacios(Usuario usuario) {
+    public boolean datosVacios(Usuario usuario, boolean revisarContrasenia) {
         if (usuario == null) {
             return true;
         }
@@ -51,8 +51,11 @@ public class VerificadorDatosUsuarioServicio {
             return true;
         }
 
-        if (usuario.getContrasenia() == null || usuario.getContrasenia().isBlank()) {
-            return true;
+        if (revisarContrasenia) {
+            if (usuario.getContrasenia() == null || usuario.getContrasenia().isBlank()) {
+                return true;
+            }
+
         }
 
         return false;
@@ -78,5 +81,5 @@ public class VerificadorDatosUsuarioServicio {
 
         return usuarioExistente.isPresent();
     }
-    
+
 }

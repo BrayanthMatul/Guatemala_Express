@@ -16,30 +16,39 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author matul
  */
-@WebServlet(name = "ConsultarPerfilServlet", urlPatterns = {"/perfil/informacion"})
+@WebServlet(name = "ConsultarPerfilServlet", urlPatterns = { "/perfil/informacion" })
 public class ConsultarPerfilServlet extends HttpServlet {
 
     private final ConsultarPerfilServicio consultarPerfilServicio = new ConsultarPerfilServicio();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         int usuarioId = (int) request.getSession().getAttribute("usuarioId");
+
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("exitoFlash") != null) {
+            request.setAttribute("exito", session.getAttribute("exitoFlash"));
+            session.removeAttribute("exitoFlash");
+        }
 
         try {
             Usuario usuario = consultarPerfilServicio.obtenerUsuarioPorId(usuarioId);
@@ -48,7 +57,7 @@ public class ConsultarPerfilServlet extends HttpServlet {
         } catch (SQLException | UsuarioNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
         }
-        
+
         request.getRequestDispatcher("/WEB-INF/views/generales/mi_perfil/consultar-perfil.jsp")
                 .forward(request, response);
     }

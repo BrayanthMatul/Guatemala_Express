@@ -195,7 +195,7 @@
                                     hover:bg-amber-300 focus:outline-none
                                     focus:ring-2 focus:ring-amber-400
                                     focus:ring-offset-2">
-                                Editar perfil
+                                Editar
                             </button>
                     </div>
                 </form>

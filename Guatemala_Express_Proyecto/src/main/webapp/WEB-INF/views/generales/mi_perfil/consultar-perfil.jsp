@@ -18,6 +18,8 @@
         <main class="mx-auto flex min-h-[calc(100vh-4rem)] w-full items-center justify-center">
             <section class="rounded-2xl p-8 shadow-2xl">
 
+                <jsp:include page="/includes/informacion.jsp"/>
+
                 <h2 class="text-center text-2xl font-bold text-gray-800">
                     Informacion del Perfil
                 </h2>
@@ -161,7 +163,7 @@
                                 hover:bg-amber-300 focus:outline-none
                                 focus:ring-2 focus:ring-amber-400
                                 focus:ring-offset-2">
-                            Editar Perfil
+                            Ir a editar perfil
                             </button>
                         </a>
                     </div>

@@ -19,7 +19,7 @@
         if (request.getAttribute("exito") != null) {
     %>
         <div class="text-center text-sm m-5 w-full">
-            <p class="text-green-950">${exito}</p>
+            <p class="text-sky-700">${exito}</p>
         </div>
     <%
         }

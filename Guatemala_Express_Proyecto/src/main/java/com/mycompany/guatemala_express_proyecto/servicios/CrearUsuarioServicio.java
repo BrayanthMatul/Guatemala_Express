@@ -30,7 +30,7 @@ public class CrearUsuarioServicio {
     public int crearUsuario(Usuario usuario)
             throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException {
 
-        if (verificador.datosVacios(usuario)) {
+        if (verificador.datosVacios(usuario, true)) {
             throw new DatosIncompletosException("Por favor, complete todos los campos requeridos.");
         }
 
