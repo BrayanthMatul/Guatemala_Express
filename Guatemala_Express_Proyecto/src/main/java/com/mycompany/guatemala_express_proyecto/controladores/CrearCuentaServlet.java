@@ -13,6 +13,7 @@ import com.mycompany.guatemala_express_proyecto.exceptions.EntidadYaRegistradaEx
 import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
 import com.mycompany.guatemala_express_proyecto.servicios.CrearUsuarioServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.generales.mi_perfil.DatosFlashPerfilServicio;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,6 +30,7 @@ import jakarta.servlet.http.HttpSession;
 public class CrearCuentaServlet extends HttpServlet {
 
     private final CrearUsuarioServicio registrarUsuarioServicio = new CrearUsuarioServicio();
+    private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,7 +39,7 @@ public class CrearCuentaServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            colocarDatosFlash(request, session);
+            datosFlashPerfilServicio.colocarDatosFlash(request, session);
         }
 
         request.getRequestDispatcher("/WEB-INF/views/crear-cuenta.jsp")
@@ -67,7 +69,7 @@ public class CrearCuentaServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/cliente/inicio");
         } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException e) {
             session.setAttribute("mensajeFlash", e.getMessage());
-            guardarDatosFlash(request, usuario);
+            datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
 
             response.sendRedirect(request.getContextPath() + "/crear_cuenta");
         }
@@ -85,62 +87,6 @@ public class CrearCuentaServlet extends HttpServlet {
         usuario.setContrasenia(request.getParameter("contrasenia"));
         usuario.setRol(Rol.CLIENTE);
         return usuario;
-    }
-
-    private void guardarDatosFlash(HttpServletRequest request, Usuario usuario) {
-        HttpSession session = request.getSession();
-        session.setAttribute("nitFlash", usuario.getNit());
-        session.setAttribute("dpiFlash", usuario.getDpi());
-        session.setAttribute("nombreCompletoFlash", usuario.getNombreCompleto());
-        session.setAttribute("telefonoFlash", usuario.getTelefono());
-        session.setAttribute("direccionFlash", usuario.getDireccion());
-        session.setAttribute("correoElectronicoFlash", usuario.getCorreoElectronico());
-    }
-
-    private void colocarDatosFlash(HttpServletRequest request, HttpSession session) {
-        Object mensaje = session.getAttribute("mensajeFlash");
-        Object nit = session.getAttribute("nitFlash");
-        Object dpi = session.getAttribute("dpiFlash");
-        Object nombreCompleto = session.getAttribute("nombreCompletoFlash");
-        Object telefono = session.getAttribute("telefonoFlash");
-        Object direccion = session.getAttribute("direccionFlash");
-        Object correoElectronico = session.getAttribute("correoElectronicoFlash");
-
-        if (mensaje != null) {
-            request.setAttribute("mensaje", mensaje);
-            session.removeAttribute("mensajeFlash");
-        }
-
-        if (nit != null) {
-            request.setAttribute("nit", nit);
-            session.removeAttribute("nitFlash");
-        }
-
-        if (dpi != null) {
-            request.setAttribute("dpi", dpi);
-            session.removeAttribute("dpiFlash");
-        }
-
-        if (nombreCompleto != null) {
-            request.setAttribute("nombreCompleto", nombreCompleto);
-            session.removeAttribute("nombreCompletoFlash");
-        }
-
-        if (telefono != null) {
-            request.setAttribute("telefono", telefono);
-            session.removeAttribute("telefonoFlash");
-        }
-
-        if (direccion != null) {
-            request.setAttribute("direccion", direccion);
-            session.removeAttribute("direccionFlash");
-        }
-
-        if (correoElectronico != null) {
-            request.setAttribute("correoElectronico", correoElectronico);
-            session.removeAttribute("correoElectronicoFlash");
-        }
-
     }
 
 }

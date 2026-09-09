@@ -5,11 +5,23 @@
 package com.mycompany.guatemala_express_proyecto.controladores.generales.mi_perfil;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
+import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;
+import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
+import com.mycompany.guatemala_express_proyecto.exceptions.EntidadYaRegistradaException;
+import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
+import com.mycompany.guatemala_express_proyecto.exceptions.UsuarioNoEncontradoException;
+import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
+import com.mycompany.guatemala_express_proyecto.servicios.generales.mi_perfil.DatosFlashPerfilServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.generales.mi_perfil.EditarPerfilServicio;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -17,6 +29,9 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "EditarPerfil", urlPatterns = {"/perfil/editar"})
 public class EditarPerfilServlet extends HttpServlet {
+
+        private final EditarPerfilServicio editorPerfilServicio = new EditarPerfilServicio();
+        private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
 
 
 
@@ -32,6 +47,26 @@ public class EditarPerfilServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        
+
+        if (session != null && session.getAttribute("edicion") != null) {
+            datosFlashPerfilServicio.colocarDatosFlash(request, session);
+            session.removeAttribute("edicion");
+        } else {
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+                int idUsuario = (int) session.getAttribute("usuarioId");
+                Usuario usuario;
+                try {
+                        usuario = usuarioDAO.obtenerUsuarioPorId(idUsuario).get();
+                        colocarDatosUsuarioEnRequest(request, usuario);
+                } catch (SQLException e) {
+                        // Escenario improbable, ya que el usuario debería existir en la base de datos
+                }
+        
+        }
+
         request.getRequestDispatcher("/WEB-INF/views/generales/mi_perfil/editar-pefil.jsp")
                 .forward(request, response);
     }
@@ -47,7 +82,41 @@ public class EditarPerfilServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+     Usuario usuario = construirUsuario(request);
+        HttpSession session = request.getSession();
+
+        try {
+            editorPerfilServicio.actualizarPerfil(usuario);
+            response.sendRedirect(request.getContextPath() + "/perfil/informacion");
+        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException | UsuarioNoEncontradoException e) {
+            session.setAttribute("mensajeFlash", e.getMessage());
+            datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
+            session.setAttribute("edicion", true);
+            response.sendRedirect(request.getContextPath() + "/perfil/editar");
+        }
+
     }
 
+    private Usuario construirUsuario(HttpServletRequest request) {
+        Usuario usuario = new Usuario();
+        int usuarioId = (int) request.getSession().getAttribute("usuarioId");
+        usuario.setId(usuarioId);
+        usuario.setNit(request.getParameter("nit"));
+        usuario.setDpi(request.getParameter("dpi"));
+        usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
+        usuario.setTelefono(request.getParameter("telefono"));
+        usuario.setDireccion(request.getParameter("direccion"));
+        usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
+        return usuario;
+    }
+
+    private void colocarDatosUsuarioEnRequest(HttpServletRequest request, Usuario usuario) {
+        request.setAttribute("nit", usuario.getNit());
+        request.setAttribute("dpi", usuario.getDpi());
+        request.setAttribute("nombreCompleto", usuario.getNombreCompleto());
+        request.setAttribute("telefono", usuario.getTelefono());
+        request.setAttribute("direccion", usuario.getDireccion());
+        request.setAttribute("correoElectronico", usuario.getCorreoElectronico());
+    }
 
 }

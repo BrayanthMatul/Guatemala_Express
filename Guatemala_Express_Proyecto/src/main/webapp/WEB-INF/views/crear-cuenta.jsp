@@ -172,7 +172,7 @@
                                         minlength="8"
                                         maxlength="8"
                                         title="Debe ingresar un numero de 8 digitos"
-                                        value="${t1elefono}"
+                                        value="${telefono}"
                                         required
                                         placeholder="1234567890123"
                                         class="w-full rounded-lg border border-blue-200

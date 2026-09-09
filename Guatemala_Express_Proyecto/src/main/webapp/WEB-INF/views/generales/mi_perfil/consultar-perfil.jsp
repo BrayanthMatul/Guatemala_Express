@@ -152,6 +152,19 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="mt-3 flex items-center justify-center w-full">
+                        <a href="${pageContext.request.contextPath}/perfil/editar">
+                            <button
+                            class="w-xs rounded-lg bg-amber-400 px-5 py-3
+                                font-bold text-slate-900 transition
+                                hover:bg-amber-300 focus:outline-none
+                                focus:ring-2 focus:ring-amber-400
+                                focus:ring-offset-2">
+                            Editar Perfil
+                            </button>
+                        </a>
+                    </div>
             </section>
         </main>
         

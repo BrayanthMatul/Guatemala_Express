@@ -49,6 +49,25 @@ public class UsuarioDAO {
         return 0;
     }
 
+    public boolean actualizarUsuario(Usuario usuario) throws SQLException {
+        String sql = "UPDATE usuario SET nit = ?, dpi = ?, nombre_completo = ?, telefono = ?, direccion = ?, correo_electronico = ? WHERE id = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, usuario.getNit());
+            preparedStatement.setString(2, usuario.getDpi());
+            preparedStatement.setString(3, usuario.getNombreCompleto());
+            preparedStatement.setString(4, usuario.getTelefono());
+            preparedStatement.setString(5, usuario.getDireccion());
+            preparedStatement.setString(6, usuario.getCorreoElectronico());
+            preparedStatement.setInt(7, usuario.getId());
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar el usuario: " + e.getMessage());
+        }
+    }
+
     public Optional<Usuario> obtenerUsuarioPorId(int id) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE id = ?";
         try (Connection coneccion = ConexionDB.getConeccion();

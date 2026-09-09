@@ -20,88 +20,33 @@ import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
 public class CrearUsuarioServicio {
 
     private final UsuarioDAO usuarioDAO;
+    private final VerificadorDatosUsuarioServicio verificador;
 
     public CrearUsuarioServicio() {
         this.usuarioDAO = new UsuarioDAO();
+        this.verificador = new VerificadorDatosUsuarioServicio();
     }
 
     public int crearUsuario(Usuario usuario)
             throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException {
 
-        if (datosVacios(usuario)) {
+        if (verificador.datosVacios(usuario)) {
             throw new DatosIncompletosException("Por favor, complete todos los campos requeridos.");
         }
 
-        if (correoYaRegistrado(usuario)) {
+        if (verificador.correoYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El correo electrónico ya está registrado.");
         }
 
-        if (nitYaRegistrado(usuario)) {
+        if (verificador.nitYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El NIT ya está registrado.");
         }
 
-        if (dpiYaRegistrado(usuario)) {
+        if (verificador.dpiYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El DPI ya está registrado.");
         }
 
         return usuarioDAO.crearUsuario(usuario);
-    }
-
-    private boolean datosVacios(Usuario usuario) {
-        if (usuario == null) {
-            return true;
-        }
-
-        if (usuario.getNit() == null || usuario.getNit().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getDpi() == null || usuario.getDpi().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getTelefono() == null || usuario.getTelefono().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getDireccion() == null || usuario.getDireccion().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getCorreoElectronico() == null || usuario.getCorreoElectronico().isBlank()) {
-            return true;
-        }
-
-        if (usuario.getContrasenia() == null || usuario.getContrasenia().isBlank()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean correoYaRegistrado(Usuario usuario) throws SQLException {
-        String correo = usuario.getCorreoElectronico();
-        Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorCorreo(correo);
-
-        return usuarioExistente.isPresent();
-    }
-
-    private boolean nitYaRegistrado(Usuario usuario) throws SQLException {
-        String nit = usuario.getNit();
-        Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorNit(nit);
-
-        return usuarioExistente.isPresent();
-    }
-
-    private boolean dpiYaRegistrado(Usuario usuario) throws SQLException {
-        String dpi = usuario.getDpi();
-        Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorDpi(dpi);
-
-        return usuarioExistente.isPresent();
     }
 
 }
