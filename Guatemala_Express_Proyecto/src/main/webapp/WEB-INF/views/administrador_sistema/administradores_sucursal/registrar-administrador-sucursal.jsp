@@ -1,6 +1,6 @@
 <%-- 
-    Document   : AdministradorSistemaInicio
-    Created on : Sep 6, 2026, 5:24:27 AM
+    Document   : registrar-administador-sucursal
+    Created on : Sep 10, 2026, 4:00:02 AM
     Author     : matul
 --%>
 
@@ -14,5 +14,6 @@
     </head>
     <body>
         <jsp:include page="/includes/header.jsp"/>
+        <h1>Hello World!Registrar admin sucursal</h1>
     </body>
 </html>

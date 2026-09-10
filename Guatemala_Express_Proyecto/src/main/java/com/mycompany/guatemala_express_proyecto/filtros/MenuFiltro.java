@@ -23,38 +23,36 @@ import java.util.List;
  *
  * @author matul
  */
-@WebFilter(filterName = "MenuFiltro", 
-        urlPatterns = {
+@WebFilter(filterName = "MenuFiltro", urlPatterns = {
         "/perfil/*",
         "/viajes/*",
         "/alquiler/*",
         "/cartera/*",
         "/cliente/*",
         "/chofer/*",
-        "/administrador-sistema/*",
-        "/administrador-sucursal/*"
-    })
+        "/administrador_sistema/*",
+        "/administrador_sucursal/*"
+})
 public class MenuFiltro implements Filter {
-    
+
     private final MenuServicio menuServicio = new MenuServicio();
-    
-    
+
     public MenuFiltro() {
     }
-    
+
     /**
      *
-     * @param request The servlet request we are processing
+     * @param request  The servlet request we are processing
      * @param response The servlet response we are creating
-     * @param chain The filter chain we are processing
+     * @param chain    The filter chain we are processing
      *
-     * @exception IOException if an input/output error occurs
+     * @exception IOException      if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
@@ -69,5 +67,5 @@ public class MenuFiltro implements Filter {
         httpRequest.setAttribute("menuItems", menuItems);
         chain.doFilter(request, response);
     }
-    
+
 }

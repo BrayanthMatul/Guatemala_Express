@@ -70,19 +70,19 @@ public class MenuServicio {
 
         private void agregarMenuAdministradorSistema(List<MenuItem> menu) {
                 MenuItem administradoresSistema = new MenuItem("Administradores de sistema",
-                                "/administrador_sistema/registrar_administrador_sucursal");
+                                "/administrador_sistema/registrar_administrador_sistema");
                 administradoresSistema.agregarSubOpcion("Registrar administrador de sistema",
-                                "/administrador_sistema/registrar_administrador_sucursal");
+                                "/administrador_sistema/registrar_administrador_sistema");
                 administradoresSistema.agregarSubOpcion("Lista de administradores de sistema",
-                                "/administrador_sistema/listar_administradores_sistema");
+                                "/administrador_sistema/lista_administradores_sistema");
                 administradoresSistema.agregarSubOpcion("Activar/Desactivar",
                                 "/administrador_sistema/activar_desactivar_administrador_sistema");
                 menu.add(administradoresSistema);
 
                 MenuItem sucursales = new MenuItem("Sucursales", "/administrador_sistema/registrar_sucursales");
-                sucursales.agregarSubOpcion("Registrar sucursal", "/administrador_sistema/registrar_sucursales");
+                sucursales.agregarSubOpcion("Registrar sucursal", "/administrador_sistema/registrar_sucursal");
                 sucursales.agregarSubOpcion("Editar sucursal", "/administrador_sistema/editar_sucursal");
-                sucursales.agregarSubOpcion("Listar sucursales", "/administrador_sistema/listar_sucursales");
+                sucursales.agregarSubOpcion("Listar sucursales", "/administrador_sistema/lista_sucursales");
                 menu.add(sucursales);
 
                 MenuItem administradoresSucursal = new MenuItem("Administradores sucursal", "/alquiler/solicitar");
@@ -91,20 +91,20 @@ public class MenuServicio {
                 administradoresSucursal.agregarSubOpcion("Editar administrador de sucursal",
                                 "/administrador_sistema/editar_administrador_sucursal");
                 administradoresSucursal.agregarSubOpcion("Listar administradores de sucursal",
-                                "/administrador_sistema/listar_administradores_sucursal");
+                                "/administrador_sistema/lista_administradores_sucursal");
                 administradoresSucursal.agregarSubOpcion("Activar/Desactivar administrador de sucursal",
                                 "/administrador_sistema/activar_desactivar_administrador_sucursal");
                 menu.add(administradoresSucursal);
 
                 MenuItem configuraciones = new MenuItem("Configurar monto de depreciación",
-                                "/configuraciones/depreciacion");
+                                "/administrador_sistema/configurar_monto_depreciacion");
                 menu.add(configuraciones);
 
                 MenuItem reportes = new MenuItem("Reportes", "/reportes");
-                reportes.agregarSubOpcion("Ganancias", "administrador_sistema/reportes/ganancias");
-                reportes.agregarSubOpcion("Rutas mas demandas", "administrador_sistema/reportes/rutas_mas_demandadas");
-                reportes.agregarSubOpcion("Costos operativos", "administrador_sistema/reportes/costos_operativos");
-                reportes.agregarSubOpcion("Mapa de rutas", "administrador_sistema/reportes/mapa_rutas");
+                reportes.agregarSubOpcion("Ganancias", "/administrador_sistema/reportes/ganancias");
+                reportes.agregarSubOpcion("Rutas mas demandas", "/administrador_sistema/reportes/rutas_mas_demandadas");
+                reportes.agregarSubOpcion("Costos operativos", "/administrador_sistema/reportes/costos_operativos");
+                reportes.agregarSubOpcion("Mapa de rutas", "/administrador_sistema/reportes/mapa_rutas");
                 menu.add(reportes);
 
         }
