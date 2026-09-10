@@ -6,6 +6,7 @@ package com.mycompany.guatemala_express_proyecto.controladores.generales.mi_perf
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;
 import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
@@ -57,12 +58,16 @@ public class EditarPerfilServlet extends HttpServlet {
             int idUsuario = (int) session.getAttribute("usuarioId");
             Usuario usuario;
             try {
-                usuario = usuarioDAO.obtenerUsuarioPorId(idUsuario).get();
-                colocarDatosUsuarioEnRequest(request, usuario);
-            } catch (SQLException e) {
-                // Escenario improbable, ya que el usuario debería existir en la base de datos
-            }
+                Optional<Usuario> usuarioOptional = usuarioDAO.obtenerUsuarioPorId(idUsuario);
 
+                if (usuarioOptional.isPresent()) {
+                    colocarDatosUsuarioEnRequest(request, usuarioOptional.get());
+                } else {
+                    request.setAttribute("error", "No se encontró el usuario.");
+                }
+            } catch (SQLException e) {
+                request.setAttribute("error", "No fue posible cargar la información del perfil.");
+            }
         }
 
         request.getRequestDispatcher("/WEB-INF/views/generales/mi_perfil/editar-pefil.jsp")

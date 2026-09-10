@@ -4,6 +4,7 @@
  */
 package com.mycompany.guatemala_express_proyecto.daos;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -182,6 +183,35 @@ public class UsuarioDAO {
             throw new SQLException("Error al obtener el usuario por ID: " + e.getMessage());
         }
         return Optional.empty();
+    }
+
+    public boolean sumarSaldo(int idUsuario, BigDecimal monto, Connection coneccion) throws SQLException {
+        String sql = "UPDATE usuario SET saldo = saldo + ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setBigDecimal(1, monto);
+            preparedStatement.setInt(2, idUsuario);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Error al sumar el saldo del usuario: " + e.getMessage());
+        }
+    }
+
+    public BigDecimal obtenerSaldo(int idUsuario) throws SQLException {
+        String sql = "SELECT saldo FROM usuario WHERE id = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setInt(1, idUsuario);
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                if (result.next()) {
+                    return result.getBigDecimal("saldo");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener el saldo del usuario: " + e.getMessage());
+        }
+        return BigDecimal.ZERO;
     }
 
 }

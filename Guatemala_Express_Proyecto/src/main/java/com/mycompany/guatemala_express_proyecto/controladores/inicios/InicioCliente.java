@@ -5,11 +5,6 @@
 package com.mycompany.guatemala_express_proyecto.controladores.inicios;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mycompany.guatemala_express_proyecto.modelos.MenuItem;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -40,32 +35,29 @@ public class InicioCliente extends HttpServlet {
                 .forward(request, response);
     }
 
+    // Mi perfil
 
+    // Consultar perfil
+    // Editar perfil
+    // Cerrar sesion
 
-// Mi perfil
+    // Viajes
 
-// Consultar perfil
-// Editar perfil
-// Cerrar sesion
+    // Comprar boletos
+    // Ver viajes regulares disponibles
+    // Boletos comprados
+    // Consultar rutas
 
-// Viajes
+    // Alquilar bus
 
-// Comprar boletos
-// Ver viajes regulares disponibles
-// Boletos comprados
-// Consultar rutas
+    // Solicitar un alquiler
+    // Pagar monto de alquiler
+    // Consultar solicitudes de alquiler
 
-// Alquilar bus
+    // Cartera
 
-// Solicitar un alquiler
-// Pagar monto de alquiler
-// Consultar solicitudes de alquiler
-
-// Cartera
-
-// Recargar saldo a cuenta
-// Historia de recargas
-// Consultar saldos y movimientos
-
+    // Recargar saldo a cuenta
+    // Historia de recargas
+    // Consultar saldos y movimientos
 
 }
