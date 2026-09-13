@@ -13,7 +13,8 @@
         <jsp:include page="/includes/recursos.jsp"/>
     </head>
     <body>
+        <jsp:include page="/includes/modal.jsp"/>
         <jsp:include page="/includes/header.jsp"/>
-        <h1>Hello World!lista Admin Sistema</h1>
+        <h1>lista Admin Sistema</h1> 
     </body>
 </html>

@@ -5,12 +5,12 @@
 package com.mycompany.guatemala_express_proyecto.controladores.administrador_sistema.administradores_sistema;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -32,6 +32,21 @@ public class ListaAdministradoresSistemaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            Object tituloModal = session.getAttribute("tituloModal");
+            Object mensajeModal = session.getAttribute("mensajeModal");
+
+            if (mensajeModal != null) {
+                request.setAttribute("tituloModal", tituloModal);
+                request.setAttribute("mensajeModal", mensajeModal);
+                session.removeAttribute("tituloModal");
+                session.removeAttribute("mensajeModal");
+            }
+        }
+        
         request.getRequestDispatcher("/WEB-INF/views/administrador_sistema/administradores_sistema/lista-administradores-sistema.jsp")
                 .forward(request, response);
     }

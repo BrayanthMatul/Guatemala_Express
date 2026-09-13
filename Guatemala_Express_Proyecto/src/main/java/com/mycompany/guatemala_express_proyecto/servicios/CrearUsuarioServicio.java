@@ -5,7 +5,6 @@
 package com.mycompany.guatemala_express_proyecto.servicios;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;
 import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
