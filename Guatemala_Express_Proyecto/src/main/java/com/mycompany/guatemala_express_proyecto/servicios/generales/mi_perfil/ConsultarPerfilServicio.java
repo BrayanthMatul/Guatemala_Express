@@ -17,14 +17,15 @@ import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
  */
 public class ConsultarPerfilServicio {
 
-    public Usuario obtenerUsuarioPorId(int id) throws SQLException, UsuarioNoEncontradoException {
+    public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario)
+            throws SQLException, UsuarioNoEncontradoException {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Optional<Usuario> usuario = usuarioDAO.obtenerUsuarioPorId(id);
-                
-        if(usuario.isPresent()) {
+        Optional<Usuario> usuario = usuarioDAO.obtenerUsuarioPorNombreUsuario(nombreUsuario);
+
+        if (usuario.isPresent()) {
             return usuario.get();
         } else {
-            throw new UsuarioNoEncontradoException("Usuario con ID " + id + " no encontrado.");
+            throw new UsuarioNoEncontradoException("Usuario con nombre " + nombreUsuario + " no encontrado.");
         }
     }
 }

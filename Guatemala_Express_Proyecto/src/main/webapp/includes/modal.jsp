@@ -7,7 +7,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <c:if test="${not empty requestScope.mensajeModal}">
 
-        <dialog id="modalMensaje" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 tarjeta" >
+        <dialog id="modalMensaje" 
+        class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+        tarjeta max-w-sm
+        backdrop:bg-slate-900/40
+        backdrop:backdrop-blur-sm" >
         
             <div class="formulario-y">
 

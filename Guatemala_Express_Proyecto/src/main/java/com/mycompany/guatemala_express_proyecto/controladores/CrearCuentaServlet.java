@@ -62,11 +62,17 @@ public class CrearCuentaServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            int idGenerado = registrarUsuarioServicio.crearUsuario(usuario);
-            request.getSession().setAttribute("usuarioId", idGenerado);
-            session.setAttribute("usuarioNombre", usuario.getNombreCompleto());
-            session.setAttribute("rol", usuario.getRol());
-            response.sendRedirect(request.getContextPath() + "/cliente/inicio");
+
+            boolean exito = registrarUsuarioServicio.crearUsuario(usuario);
+
+            if (exito) {
+                session.setAttribute("nombreUsuario", usuario.getNombreUsuario());
+                session.setAttribute("rol", usuario.getRol());
+                session.setAttribute("tituloModalFlash", "Éxito");
+                session.setAttribute("mensajeModalFlash", "Cuenta creada exitosamente.");
+                response.sendRedirect(request.getContextPath() + "/perfil/informacion");
+            }
+
         } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException e) {
             session.setAttribute("mensajeFlash", e.getMessage());
             datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
@@ -78,6 +84,7 @@ public class CrearCuentaServlet extends HttpServlet {
 
     private Usuario construirUsuario(HttpServletRequest request) {
         Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
         usuario.setNit(request.getParameter("nit"));
         usuario.setDpi(request.getParameter("dpi"));
         usuario.setNombreCompleto(request.getParameter("nombreCompleto"));

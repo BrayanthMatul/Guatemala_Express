@@ -76,7 +76,8 @@ public class RegistrarAdminstradorSistemaServlet extends HttpServlet {
                 try {
                         registrarUsuarioServicio.crearUsuario(usuario);
                         session.setAttribute("tituloModal", "Administrador guardado");
-                        session.setAttribute("mensajeModal", "Administrador " + nombreUsuario + " registrado correctamente.");
+                        session.setAttribute("mensajeModal",
+                                        "Administrador " + nombreUsuario + " registrado correctamente.");
                         response.sendRedirect(request.getContextPath()
                                         + "/administrador_sistema/lista_administradores_sistema");
                 } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException
@@ -91,6 +92,7 @@ public class RegistrarAdminstradorSistemaServlet extends HttpServlet {
 
         private Usuario construirUsuario(HttpServletRequest request) {
                 Usuario usuario = new Usuario();
+                usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
                 usuario.setNit(request.getParameter("nit"));
                 usuario.setDpi(request.getParameter("dpi"));
                 usuario.setNombreCompleto(request.getParameter("nombreCompleto"));

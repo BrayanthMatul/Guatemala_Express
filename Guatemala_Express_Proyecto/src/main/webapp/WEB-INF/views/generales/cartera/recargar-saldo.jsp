@@ -19,16 +19,11 @@
     <body>
 
         <jsp:include page="/includes/header.jsp"/>  
+        <jsp:include page="/includes/modal.jsp"/>
        
-        <main class="contenedor">
+        <main class="contenedor-sm">
            
             <section class="tarjeta">
-
-                <c:if test="${not empty requestScope.recargaExito}">
-                    <p class="mb-6 text-center text-sm text-sky-700">
-                        <c:out value="${requestScope.recargaExito}"/>
-                    </p>
-                </c:if>
 
                 <h2 class="titulo">
                     Recargar saldo

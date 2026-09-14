@@ -22,36 +22,30 @@ import com.mycompany.guatemala_express_proyecto.util.ConexionDB;
  */
 public class UsuarioDAO {
 
-    public int crearUsuario(Usuario usuario) throws NoGuardadoEnBDException {
-        String sql = "INSERT INTO usuario (nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean crearUsuario(Usuario usuario) throws NoGuardadoEnBDException {
+        String sql = "INSERT INTO usuario (nombre_usuario, nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection coneccion = ConexionDB.getConeccion();
-                PreparedStatement preparedStatement = coneccion.prepareStatement(sql,
-                        PreparedStatement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, usuario.getNit());
-            preparedStatement.setString(2, usuario.getDpi());
-            preparedStatement.setString(3, usuario.getNombreCompleto());
-            preparedStatement.setString(4, usuario.getTelefono());
-            preparedStatement.setString(5, usuario.getDireccion());
-            preparedStatement.setString(6, usuario.getCorreoElectronico());
-            preparedStatement.setString(7, usuario.getContrasenia());
-            preparedStatement.setString(8, usuario.getRol().name());
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, usuario.getNombreUsuario());
+            preparedStatement.setString(2, usuario.getNit());
+            preparedStatement.setString(3, usuario.getDpi());
+            preparedStatement.setString(4, usuario.getNombreCompleto());
+            preparedStatement.setString(5, usuario.getTelefono());
+            preparedStatement.setString(6, usuario.getDireccion());
+            preparedStatement.setString(7, usuario.getCorreoElectronico());
+            preparedStatement.setString(8, usuario.getContrasenia());
+            preparedStatement.setString(9, usuario.getRol().name());
 
-            preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate() > 0;
 
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                }
-            }
         } catch (SQLException e) {
             throw new NoGuardadoEnBDException("Error al crear el usuario: " + e.getMessage());
         }
 
-        return 0;
     }
 
     public boolean actualizarUsuario(Usuario usuario) throws SQLException {
-        String sql = "UPDATE usuario SET nit = ?, dpi = ?, nombre_completo = ?, telefono = ?, direccion = ?, correo_electronico = ? WHERE id = ?";
+        String sql = "UPDATE usuario SET nit = ?, dpi = ?, nombre_completo = ?, telefono = ?, direccion = ?, correo_electronico = ? WHERE nombre_usuario = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
                 PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
             preparedStatement.setString(1, usuario.getNit());
@@ -60,24 +54,24 @@ public class UsuarioDAO {
             preparedStatement.setString(4, usuario.getTelefono());
             preparedStatement.setString(5, usuario.getDireccion());
             preparedStatement.setString(6, usuario.getCorreoElectronico());
-            preparedStatement.setInt(7, usuario.getId());
+            preparedStatement.setString(7, usuario.getNombreUsuario());
 
-            int filasAfectadas = preparedStatement.executeUpdate();
-            return filasAfectadas > 0;
+            return preparedStatement.executeUpdate() > 0;
+
         } catch (SQLException e) {
             throw new SQLException("Error al actualizar el usuario: " + e.getMessage());
         }
     }
 
-    public Optional<Usuario> obtenerUsuarioPorId(int id) throws SQLException {
-        String sql = "SELECT * FROM usuario WHERE id = ?";
+    public Optional<Usuario> obtenerUsuarioPorNombreUsuario(String nombreUsuario) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
                 PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, nombreUsuario);
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setId(result.getInt("id"));
+                    usuario.setNombreUsuario(result.getString("nombre_usuario"));
                     usuario.setNit(result.getString("nit"));
                     usuario.setDpi(result.getString("dpi"));
                     usuario.setNombreCompleto(result.getString("nombre_completo"));
@@ -106,7 +100,7 @@ public class UsuarioDAO {
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setId(result.getInt("id"));
+                    usuario.setNombreUsuario(result.getString("nombre_usuario"));
                     usuario.setNit(result.getString("nit"));
                     usuario.setDpi(result.getString("dpi"));
                     usuario.setNombreCompleto(result.getString("nombre_completo"));
@@ -135,7 +129,7 @@ public class UsuarioDAO {
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setId(result.getInt("id"));
+                    usuario.setNombreUsuario(result.getString("nombre_usuario"));
                     usuario.setNit(result.getString("nit"));
                     usuario.setDpi(result.getString("dpi"));
                     usuario.setNombreCompleto(result.getString("nombre_completo"));
@@ -164,7 +158,7 @@ public class UsuarioDAO {
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setId(result.getInt("id"));
+                    usuario.setNombreUsuario(result.getString("nombre_usuario"));
                     usuario.setNit(result.getString("nit"));
                     usuario.setDpi(result.getString("dpi"));
                     usuario.setNombreCompleto(result.getString("nombre_completo"));
@@ -185,24 +179,26 @@ public class UsuarioDAO {
         return Optional.empty();
     }
 
-    public boolean sumarSaldo(int idUsuario, BigDecimal monto, Connection coneccion) throws SQLException {
-        String sql = "UPDATE usuario SET saldo = saldo + ? WHERE id = ?";
+    public boolean sumarSaldo(String nombreUsuario, BigDecimal monto, Connection coneccion) throws SQLException {
+        String sql = "UPDATE usuario SET saldo = saldo + ? WHERE nombre_usuario = ?";
         try (PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
             preparedStatement.setBigDecimal(1, monto);
-            preparedStatement.setInt(2, idUsuario);
+            preparedStatement.setString(2, nombreUsuario);
 
-            int filasAfectadas = preparedStatement.executeUpdate();
-            return filasAfectadas > 0;
+            return preparedStatement.executeUpdate() > 0;
+
         } catch (SQLException e) {
             throw new SQLException("Error al sumar el saldo del usuario: " + e.getMessage());
         }
     }
 
-    public BigDecimal obtenerSaldo(int idUsuario) throws SQLException {
-        String sql = "SELECT saldo FROM usuario WHERE id = ?";
+    public BigDecimal obtenerSaldo(String nombreUsuario) throws SQLException {
+        String sql = "SELECT saldo FROM usuario WHERE nombre_usuario = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
                 PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
-            preparedStatement.setInt(1, idUsuario);
+
+            preparedStatement.setString(1, nombreUsuario);
+
             try (ResultSet result = preparedStatement.executeQuery()) {
                 if (result.next()) {
                     return result.getBigDecimal("saldo");
@@ -211,14 +207,14 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             throw new SQLException("Error al obtener el saldo del usuario: " + e.getMessage());
         }
+
         return BigDecimal.ZERO;
     }
 
 }
 
 // usuario(
-// id INT
-// PRIMARY KEY AUTO_INCREMENT,
+// nombre_usuario VARCHAR(50) NOT NULL PRIMARY KEY,
 // nit VARCHAR(20) NOT NULL,
 // dpi VARCHAR(20) NOT NULL,
 // nombre_completo VARCHAR(255) NOT NULL,

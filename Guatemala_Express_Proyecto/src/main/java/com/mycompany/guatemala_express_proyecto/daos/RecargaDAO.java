@@ -17,9 +17,9 @@ import com.mycompany.guatemala_express_proyecto.modelos.Recarga;
 public class RecargaDAO {
 
     public void insertarRecarga(Recarga recarga, Connection coneccion) throws SQLException {
-        String sql = "INSERT INTO recarga (id_usuario, fecha_hora_recarga, monto) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO recarga (nombre_usuario, fecha_hora_recarga, monto) VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
-            preparedStatement.setInt(1, recarga.getIdUsuario());
+            preparedStatement.setString(1, recarga.getNombreUsuario());
             preparedStatement.setObject(2, recarga.getFechaHoraRecarga());
             preparedStatement.setBigDecimal(3, recarga.getMonto());
 
@@ -35,12 +35,8 @@ public class RecargaDAO {
 
 // recarga (
 // id INT PRIMARY KEY AUTO_INCREMENT,
-// id_usuario INT NOT NULL,
+// nombre_usuario VARCHAR(50) NOT NULL,
 // fecha_hora_recarga DATETIME NOT NULL,
-
 // monto DECIMAL(10, 2) NOT NULL,
-
-// FOREIGN KEY (id_usuario)
-
-// REFERENCES usuario(id)
+// FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario)
 // );

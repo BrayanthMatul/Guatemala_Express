@@ -55,7 +55,7 @@ public class RecargaServicio {
 
             try {
                 recargaDAO.insertarRecarga(recarga, connection);
-                usuarioDAO.sumarSaldo(recarga.getIdUsuario(), recarga.getMonto(), connection);
+                usuarioDAO.sumarSaldo(recarga.getNombreUsuario(), recarga.getMonto(), connection);
                 connection.commit();
             } catch (SQLException e) {
                 try {

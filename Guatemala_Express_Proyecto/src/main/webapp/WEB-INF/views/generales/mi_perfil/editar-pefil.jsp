@@ -18,6 +18,7 @@
 
     <body>
         <jsp:include page="/includes/header.jsp"/>  
+        <jsp:include page="/includes/modal.jsp"/>
 
         <main class="contenedor">
 
@@ -54,24 +55,6 @@
                                             value="<c:out value='${correoElectronico}'/>"
                                             required
                                             placeholder="1234567890123"
-                                            class="input-formulario">
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label for="NombreUsuario" class="label-formulario">
-                                        Nombre de usuario
-                                    </label>
-
-                                    <div class="relative">
-                                        <i class="pi pi-user icono-input"></i>
-                                        <input
-                                            id="NombreUsuario"
-                                            name="nombreUsuario"
-                                            type="text"
-                                            value="<c:out value='${nombreUsuario}'/>"
-                                            required
-                                            placeholder="Nombre de usuario"
                                             class="input-formulario">
                                     </div>
                                 </div>

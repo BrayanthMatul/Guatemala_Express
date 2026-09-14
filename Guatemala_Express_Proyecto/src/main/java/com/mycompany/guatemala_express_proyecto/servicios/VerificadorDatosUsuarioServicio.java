@@ -27,6 +27,10 @@ public class VerificadorDatosUsuarioServicio {
             return true;
         }
 
+        if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isBlank()) {
+            return true;
+        }
+
         if (usuario.getNit() == null || usuario.getNit().isBlank()) {
             return true;
         }
@@ -59,6 +63,13 @@ public class VerificadorDatosUsuarioServicio {
         }
 
         return false;
+    }
+
+    public boolean nombreUsuarioYaRegistrado(Usuario usuario) throws SQLException {
+        String nombreUsuario = usuario.getNombreUsuario();
+        Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorNombreUsuario(nombreUsuario);
+
+        return usuarioExistente.isPresent();
     }
 
     public boolean correoYaRegistrado(Usuario usuario) throws SQLException {

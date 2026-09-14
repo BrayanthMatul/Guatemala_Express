@@ -9,7 +9,7 @@ FLUSH PRIVILEGES;
 USE guatemala_express;
 
 CREATE TABLE usuario (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_usuario VARCHAR(50) NOT NULL PRIMARY KEY,
     nit VARCHAR(20) NOT NULL,
     dpi VARCHAR(20) NOT NULL,
     nombre_completo VARCHAR(255) NOT NULL,
@@ -23,8 +23,8 @@ CREATE TABLE usuario (
     UNIQUE (nit, dpi, correo_electronico)
 );
 
-INSERT INTO usuario (nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES
-('123456789', '1234567890123', 'Juan Perez', '555-1234', 'Zona 3 Quetzaltenango', 'juan.perez@example.com', 'password123', 'ADMINISTRADOR_SISTEMA');
+INSERT INTO usuario (nombre_usuario, nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES
+('admin', '1111-1', '1234567890123', 'Juan Perez', '55512345', 'Zona 3 Quetzaltenango', 'juan@gmail.com', '123', 'ADMINISTRADOR_SISTEMA');
 
 
 CREATE TABLE sucursal (
@@ -41,23 +41,23 @@ CREATE TABLE sucursal (
 
 
 CREATE TABLE administrador_sucursal (
-    usuario_id INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     sucursal_id INT NOT NULL,
-    PRIMARY KEY (usuario_id),
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    PRIMARY KEY (nombre_usuario),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
     FOREIGN KEY (sucursal_id) REFERENCES sucursal(id)
 );
 
 CREATE TABLE chofer (
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     id_sucursal INT NOT NULL,
     fotografia LONGBLOB NOT NULL,
     numero_licencia VARCHAR(50) NOT NULL UNIQUE,
     tipo_licencia VARCHAR(50) NOT NULL,
     fecha_vencimiento_licencia DATE NOT NULL,
     salario_base_por_viaje DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (id_usuario),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    PRIMARY KEY (nombre_usuario),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
     FOREIGN KEY (id_sucursal) REFERENCES sucursal(id)
 );
 
@@ -90,18 +90,18 @@ CREATE TABLE ruta_regular(
 CREATE TABLE viaje (
     id INT PRIMARY KEY AUTO_INCREMENT,
     placa_bus VARCHAR(20) NOT NULL,
-    id_chofer INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     fecha_hora_salida_programada DATETIME NOT NULL,
     fecha_hora_llegada_programada DATETIME NOT NULL,
     salario_aplicado DECIMAL(10, 2) NOT NULL,
     estado_viaje VARCHAR(50) NOT NULL DEFAULT 'PROGRAMADO',
     FOREIGN KEY (placa_bus) REFERENCES bus(numero_placa),
-    FOREIGN KEY (id_chofer) REFERENCES chofer(id_usuario)
+    FOREIGN KEY (nombre_usuario) REFERENCES chofer(nombre_usuario)
 );
 
 CREATE TABLE solicitud_alquiler(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     id_sucursal INT NOT NULL,
     latitud_origen DECIMAL(9, 6) NOT NULL,
     longitud_origen DECIMAL(9, 6) NOT NULL,
@@ -116,18 +116,18 @@ CREATE TABLE solicitud_alquiler(
     cantidad_pasajeros INT NOT NULL,
     estado_solicitud VARCHAR(50) NOT NULL DEFAULT 'PENDIENTE',
     estado_pago VARCHAR(50) NOT NULL DEFAULT 'NO_PAGADO',
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
     FOREIGN KEY (id_sucursal) REFERENCES sucursal(id)
 );
 
 CREATE TABLE pago_alquiler(
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_solicitud_alquiler INT NOT NULL UNIQUE,
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     fecha_hora_pago DATETIME NOT NULL,
     monto_pagado DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_solicitud_alquiler) REFERENCES solicitud_alquiler(id),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario)
 );
 
 
@@ -147,28 +147,28 @@ CREATE TABLE viaje_privado (
 
 CREATE TABLE registro_salida(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
-    id_chofer INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
+    nombre_chofer VARCHAR(50) NOT NULL,
     placa_bus VARCHAR(20) NOT NULL,
     id_viaje INT NOT NULL UNIQUE,
     fecha_hora_salida DATETIME NOT NULL,
     kilometraje_inicial DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY (id_chofer) REFERENCES chofer(id_usuario),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
+    FOREIGN KEY (nombre_chofer) REFERENCES chofer(nombre_usuario),
     FOREIGN KEY (placa_bus) REFERENCES bus(numero_placa),
     FOREIGN KEY (id_viaje) REFERENCES viaje(id)
 );
 
 CREATE TABLE registro_llegada(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     id_viaje INT NOT NULL UNIQUE,
     fecha_hora_llegada DATETIME NOT NULL,
     kilometraje_final DECIMAL(10, 2) NOT NULL,
     gasto_combustible DECIMAL(10, 2) NOT NULL,
     tarifa_depreciacion_aplicada DECIMAL(10, 2) NOT NULL,
     monto_depreciacion DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
     FOREIGN KEY (id_viaje) REFERENCES viaje(id)
 );
 
@@ -183,12 +183,12 @@ INSERT INTO configuracion (descripcion, valor) VALUES
 
 CREATE TABLE compra (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     id_viaje INT NOT NULL,
     fecha_hora DATETIME NOT NULL,
     monto_total DECIMAL(10,2) NOT NULL,
     UNIQUE (id, id_viaje),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),
     FOREIGN KEY (id_viaje) REFERENCES viaje(id)
 );
 
@@ -204,10 +204,10 @@ CREATE TABLE boleto (
 
 CREATE TABLE recarga (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     fecha_hora_recarga DATETIME NOT NULL,
     monto DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario)
 );
 
 CREATE TABLE gasto_taller(

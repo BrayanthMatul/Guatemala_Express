@@ -26,25 +26,32 @@ public class LoginServicio {
         this.usuarioDAO = new UsuarioDAO();
     }
 
-    public Usuario iniciarSesion(String correo, String contrasenia)
+    public Usuario iniciarSesion(String identificador, String contrasenia)
             throws UsuarioNoEncontradoException, DatosIncompletosException, CredencialesInvalidasException,
             UsuarioDesactivadoException, SQLException {
 
-        if (datosVacios(correo, contrasenia)) {
-            throw new DatosIncompletosException("El correo o la contraseña están vacíos.");
+        if (datosVacios(identificador, contrasenia)) {
+            throw new DatosIncompletosException("Nombre de usuario / Correo o la contraseña están vacíos.");
         }
 
-        String correoLimpio = correo.trim();
-        Optional<Usuario> usuarioOptional = usuarioDAO.obtenerUsuarioPorCorreo(correoLimpio);
+        String identificadorLimpio = identificador.trim();
+        Optional<Usuario> usuarioOptionalNombreUsuario = usuarioDAO.obtenerUsuarioPorNombreUsuario(identificadorLimpio);
+        Optional<Usuario> usuarioOptionalCorreo = usuarioDAO.obtenerUsuarioPorCorreo(identificadorLimpio);
 
-        if (usuarioOptional.isEmpty()) {
-            throw new UsuarioNoEncontradoException("Usuario no encontrado con el correo proporcionado.");
+        if (usuarioOptionalNombreUsuario.isEmpty() && usuarioOptionalCorreo.isEmpty()) {
+            throw new UsuarioNoEncontradoException("Credenciales inválidas, ingrese nuevamente.");
         }
 
-        Usuario usuario = usuarioOptional.get();
+        Usuario usuario = null;
+
+        if (usuarioOptionalNombreUsuario.isPresent()) {
+            usuario = usuarioOptionalNombreUsuario.get();
+        } else {
+            usuario = usuarioOptionalCorreo.get();
+        }
 
         if (!usuario.getContrasenia().equals(contrasenia)) {
-            throw new CredencialesInvalidasException("La contraseña proporcionada es incorrecta.");
+            throw new CredencialesInvalidasException("Credenciales inválidas, ingrese nuevamente.");
         }
 
         if (!usuario.isEstado()) {
@@ -54,7 +61,7 @@ public class LoginServicio {
         return usuario;
     }
 
-    private boolean datosVacios(String correo, String contrasenia) {
-        return correo == null || correo.isBlank() || contrasenia == null || contrasenia.isBlank();
+    private boolean datosVacios(String identificador, String contrasenia) {
+        return identificador == null || identificador.isBlank() || contrasenia == null || contrasenia.isBlank();
     }
 }

@@ -14,7 +14,7 @@ import com.mycompany.guatemala_express_proyecto.enums.Rol;
  */
 public class Usuario {
 
-    private int id;
+    private String nombreUsuario;
     private String nit;
     private String dpi;
     private String nombreCompleto;
@@ -29,9 +29,10 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int id, String nit, String dpi, String nombreCompleto, String telefono, String direccion,
+    public Usuario(String nombreUsuario, String nit, String dpi, String nombreCompleto, String telefono,
+            String direccion,
             String correoElectronico, String contrasenia, Rol rol, BigDecimal saldo, boolean estado) {
-        this.id = id;
+        this.nombreUsuario = nombreUsuario;
         this.nit = nit;
         this.dpi = dpi;
         this.nombreCompleto = nombreCompleto;
@@ -44,25 +45,12 @@ public class Usuario {
         this.estado = estado;
     }
 
-    public Usuario(String nit, String dpi, String nombreCompleto, String telefono, String direccion,
-            String correoElectronico, String contrasenia, Rol rol) {
-        this.nit = nit;
-        this.dpi = dpi;
-        this.nombreCompleto = nombreCompleto;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.correoElectronico = correoElectronico;
-        this.contrasenia = contrasenia;
-        this.rol = rol;
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public String getNit() {

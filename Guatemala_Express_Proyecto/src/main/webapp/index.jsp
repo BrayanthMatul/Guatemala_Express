@@ -18,7 +18,7 @@
 
     <body>
 
-        <main class="contenedor">
+        <main class="contenedor-sm">
 
             <header class="mb-7 text-center">
                 <h1>
@@ -33,7 +33,7 @@
                     Iniciar sesión
                 </h2>
 
-                <p class="linea">
+                <p class="linea-sm">
                     Ingrese sus datos para iniciar sesión
                 </p>
 
@@ -41,17 +41,17 @@
 
                     <div class="formulario-y">
                         <div>
-                            <label for="correo" class="label-formulario">
+                            <label for="Identificador" class="label-formulario">
                                 Correo electrónico o nombre de usuario
                             </label>
 
                             <div class="relative">
                                 <i class="pi pi-envelope icono-input"></i>
                                 <input
-                                    id="correo"
-                                    name="correo"
-                                    type="email"
-                                    value="<c:out value='${requestScope.correo}'/>"
+                                    id="Identificador"
+                                    name="identificador"
+                                    type="text"
+                                    value="<c:out value='${requestScope.identificador}'/>"
                                     autocomplete="email"
                                     required
                                     placeholder="nombre.ejemplo@correo.com"
@@ -89,7 +89,7 @@
 
                 </form>
 
-                <p class="linea">
+                <p class="linea-sm">
                     ¿Todavía no tenés una cuenta?
 
                     <a

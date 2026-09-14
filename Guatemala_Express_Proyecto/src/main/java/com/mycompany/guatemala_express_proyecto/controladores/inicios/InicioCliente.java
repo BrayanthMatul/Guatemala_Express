@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -31,33 +32,24 @@ public class InicioCliente extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            Object tituloModal = session.getAttribute("tituloModalFlash");
+            Object mensajeModal = session.getAttribute("mensajeModalFlash");
+
+            if (tituloModal != null) {
+                request.setAttribute("titulo", tituloModal);
+                session.removeAttribute("tituloModalFlash");
+            }
+            if (mensajeModal != null) {
+                request.setAttribute("mensaje", mensajeModal);
+                session.removeAttribute("mensajeModalFlash");
+            }
+        }
         request.getRequestDispatcher("/WEB-INF/views/cliente/inicio.jsp")
                 .forward(request, response);
     }
-
-    // Mi perfil
-
-    // Consultar perfil
-    // Editar perfil
-    // Cerrar sesion
-
-    // Viajes
-
-    // Comprar boletos
-    // Ver viajes regulares disponibles
-    // Boletos comprados
-    // Consultar rutas
-
-    // Alquilar bus
-
-    // Solicitar un alquiler
-    // Pagar monto de alquiler
-    // Consultar solicitudes de alquiler
-
-    // Cartera
-
-    // Recargar saldo a cuenta
-    // Historia de recargas
-    // Consultar saldos y movimientos
 
 }

@@ -41,17 +41,24 @@ public class ConsultarPerfilServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int usuarioId = (int) request.getSession().getAttribute("usuarioId");
-
+        String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
         HttpSession session = request.getSession();
+        Object tituloModal = session.getAttribute("tituloModalFlash");
+        Object mensajeModal = session.getAttribute("mensajeModalFlash");
 
-        if (session.getAttribute("exitoFlash") != null) {
-            request.setAttribute("exito", session.getAttribute("exitoFlash"));
-            session.removeAttribute("exitoFlash");
+        if (tituloModal != null) {
+            request.setAttribute("tituloModal", tituloModal);
+            session.removeAttribute("tituloModalFlash");
+        }
+
+        if (mensajeModal != null) {
+            request.setAttribute("mensajeModal", mensajeModal);
+            session.removeAttribute("mensajeModalFlash");
+
         }
 
         try {
-            Usuario usuario = consultarPerfilServicio.obtenerUsuarioPorId(usuarioId);
+            Usuario usuario = consultarPerfilServicio.obtenerUsuarioPorNombreUsuario(nombreUsuario);
             usuario.setContrasenia("");
             request.setAttribute("usuario", usuario);
         } catch (SQLException | UsuarioNoEncontradoException e) {

@@ -55,18 +55,20 @@ public class EditarPerfilServlet extends HttpServlet {
             session.removeAttribute("edicion");
         } else {
             UsuarioDAO usuarioDAO = new UsuarioDAO();
-            int idUsuario = (int) session.getAttribute("usuarioId");
-            Usuario usuario;
+            String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
+
             try {
-                Optional<Usuario> usuarioOptional = usuarioDAO.obtenerUsuarioPorId(idUsuario);
+                Optional<Usuario> usuarioOptional = usuarioDAO.obtenerUsuarioPorNombreUsuario(nombreUsuario);
 
                 if (usuarioOptional.isPresent()) {
                     colocarDatosUsuarioEnRequest(request, usuarioOptional.get());
                 } else {
-                    request.setAttribute("error", "No se encontró el usuario.");
+                    request.setAttribute("tituloModal", "Error");
+                    request.setAttribute("mensajeModal", "No se encontró el usuario.");
                 }
             } catch (SQLException e) {
-                request.setAttribute("error", "No fue posible cargar la información del perfil.");
+                request.setAttribute("tituloModal", "Error");
+                request.setAttribute("mensajeModal", "No fue posible cargar la información del perfil.");
             }
         }
 
@@ -90,7 +92,8 @@ public class EditarPerfilServlet extends HttpServlet {
 
         try {
             editorPerfilServicio.actualizarPerfil(usuario);
-            session.setAttribute("exitoFlash", "Perfil actualizado exitosamente.");
+            session.setAttribute("tituloModalFlash", "Éxito");
+            session.setAttribute("mensajeModalFlash", "Perfil actualizado exitosamente.");
             response.sendRedirect(request.getContextPath() + "/perfil/informacion");
         } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException
                 | UsuarioNoEncontradoException e) {
@@ -104,8 +107,8 @@ public class EditarPerfilServlet extends HttpServlet {
 
     private Usuario construirUsuario(HttpServletRequest request) {
         Usuario usuario = new Usuario();
-        int usuarioId = (int) request.getSession().getAttribute("usuarioId");
-        usuario.setId(usuarioId);
+        String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
+        usuario.setNombreUsuario(nombreUsuario);
         usuario.setNit(request.getParameter("nit"));
         usuario.setDpi(request.getParameter("dpi"));
         usuario.setNombreCompleto(request.getParameter("nombreCompleto"));

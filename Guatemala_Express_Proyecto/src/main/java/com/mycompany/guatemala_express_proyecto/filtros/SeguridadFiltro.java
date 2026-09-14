@@ -45,7 +45,7 @@ public class SeguridadFiltro implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
 
-        if (session == null || session.getAttribute("usuarioId") == null) {
+        if (session == null || session.getAttribute("nombreUsuario") == null) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
             return;
         }

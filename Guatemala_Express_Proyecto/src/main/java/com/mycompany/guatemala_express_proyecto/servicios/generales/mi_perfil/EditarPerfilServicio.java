@@ -32,10 +32,10 @@ public class EditarPerfilServicio {
             throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException,
             UsuarioNoEncontradoException {
 
-        Optional<Usuario> usuarioRegistrado = usuarioDAO.obtenerUsuarioPorId(usuario.getId());
+        Optional<Usuario> usuarioRegistrado = usuarioDAO.obtenerUsuarioPorNombreUsuario(usuario.getNombreUsuario());
 
         if (usuarioRegistrado.isEmpty()) {
-            throw new UsuarioNoEncontradoException("Usuario con ID " + usuario.getId() + " no encontrado.");
+            throw new UsuarioNoEncontradoException("Usuario " + usuario.getNombreUsuario() + " no encontrado.");
         }
 
         if (verificador.datosVacios(usuario, false)) {

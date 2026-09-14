@@ -13,19 +13,19 @@ import java.time.LocalDateTime;
  */
 public class Recarga {
     private int id;
-    private int idUsuario;
+    private String nombreUsuario;
     private LocalDateTime fechaHoraRecarga;
     private BigDecimal monto;
 
-    public Recarga(int idUsuario, LocalDateTime fechaHoraRecarga, BigDecimal monto) {
-        this.idUsuario = idUsuario;
+    public Recarga(String nombreUsuario, LocalDateTime fechaHoraRecarga, BigDecimal monto) {
+        this.nombreUsuario = nombreUsuario;
         this.fechaHoraRecarga = fechaHoraRecarga;
         this.monto = monto;
     }
 
-    public Recarga(int id, int idUsuario, LocalDateTime fechaHoraRecarga, BigDecimal monto) {
+    public Recarga(int id, String nombreUsuario, LocalDateTime fechaHoraRecarga, BigDecimal monto) {
         this.id = id;
-        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
         this.fechaHoraRecarga = fechaHoraRecarga;
         this.monto = monto;
     }
@@ -38,12 +38,12 @@ public class Recarga {
         this.id = id;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public LocalDateTime getFechaHoraRecarga() {
@@ -63,17 +63,3 @@ public class Recarga {
     }
 
 }
-
-// CREATE TABLE
-
-// recarga (
-// id INT PRIMARY KEY AUTO_INCREMENT,
-// id_usuario INT NOT NULL,
-// fecha_hora_recarga DATETIME NOT NULL,
-
-// monto DECIMAL(10, 2) NOT NULL,
-
-// FOREIGN KEY (id_usuario)
-
-// REFERENCES usuario(id)
-// );

@@ -19,18 +19,17 @@
     <body>
 
         <jsp:include page="/includes/header.jsp"/>
+        <jsp:include page="/includes/modal.jsp"/>
 
         <main class="contenedor">
 
             <section class="tarjeta">
 
-                <jsp:include page="/includes/informacion.jsp"/>
-
                 <h2 class="titulo">
                     Informacion del Perfil
                 </h2>
 
-                <p class="linea">
+                <p class="linea-sm">
                     Rol: <c:out value="${usuario.rol}"/>
                 </p>
 
@@ -101,7 +100,7 @@
 
                         </div>
 
-                        <div class="formulario-x">
+                        <div class="formulario-y">
 
                             <div>
                                 <label class="label-formulario">

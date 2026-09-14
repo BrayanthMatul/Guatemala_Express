@@ -69,15 +69,17 @@ public class RecargarSaldoServlet extends HttpServlet {
         protected void doPost(HttpServletRequest request, HttpServletResponse response)
                         throws ServletException, IOException {
 
-                int idUsuario = (int) request.getSession().getAttribute("usuarioId");
+                String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
                 String fechaHoraString = request.getParameter("fechaHora");
                 String montoRecargaString = request.getParameter("montoRecarga");
                 HttpSession session = request.getSession();
 
                 try {
-                        Recarga recarga = construirRecarga(idUsuario, fechaHoraString, montoRecargaString);
+                        Recarga recarga = construirRecarga(nombreUsuario, fechaHoraString, montoRecargaString);
                         recargaServicio.guardarRecarga(recarga);
-                        session.setAttribute("recargaExitoFlash", "Recarga realizada exitosamente.");
+                        session.setAttribute("tituloModalFlash", "Exito");
+                        session.setAttribute("mensajeModalFlash",
+                                        "Se acredito Q. " + recarga.getMonto() + " a su saldo.");
                         response.sendRedirect(request.getContextPath() + "/cartera/recargar_saldo");
                 } catch (DatosIncompletosException | DatoInvalidoException | SQLException e) {
                         session.setAttribute("mensajeFlash", e.getMessage());
@@ -87,7 +89,7 @@ public class RecargarSaldoServlet extends HttpServlet {
                 }
         }
 
-        private Recarga construirRecarga(int idUsuario, String fechaHoraString, String montoRecargaString)
+        private Recarga construirRecarga(String nombreUsuario, String fechaHoraString, String montoRecargaString)
                         throws DatosIncompletosException, DatoInvalidoException {
                 verificarDatosVacios(fechaHoraString, montoRecargaString);
 
@@ -106,7 +108,7 @@ public class RecargarSaldoServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                         throw new DatoInvalidoException("El monto ingresado no es válido.");
                 }
-                return new Recarga(idUsuario, fechaHora, montoRecarga);
+                return new Recarga(nombreUsuario, fechaHora, montoRecarga);
         }
 
         private void verificarDatosVacios(String fechaHoraString, String montoRecargaString)
@@ -126,7 +128,8 @@ public class RecargarSaldoServlet extends HttpServlet {
                 Object mensajeFlash = httpSession.getAttribute("mensajeFlash");
                 Object fechaHoraFlash = httpSession.getAttribute("fechaHoraFlash");
                 Object montoRecargaFlash = httpSession.getAttribute("montoRecargaFlash");
-                Object recargaExito = httpSession.getAttribute("recargaExitoFlash");
+                Object tituloModal = httpSession.getAttribute("tituloModalFlash");
+                Object mensajeModal = httpSession.getAttribute("mensajeModalFlash");
 
                 if (mensajeFlash != null) {
                         request.setAttribute("mensaje", mensajeFlash);
@@ -143,20 +146,25 @@ public class RecargarSaldoServlet extends HttpServlet {
                         httpSession.removeAttribute("montoRecargaFlash");
                 }
 
-                if (recargaExito != null) {
-                        request.setAttribute("recargaExito", recargaExito);
-                        httpSession.removeAttribute("recargaExitoFlash");
+                if (tituloModal != null) {
+                        request.setAttribute("tituloModal", tituloModal);
+                        httpSession.removeAttribute("tituloModalFlash");
+                }
+
+                if (mensajeModal != null) {
+                        request.setAttribute("mensajeModal", mensajeModal);
+                        httpSession.removeAttribute("mensajeModalFlash");
                 }
         }
 
         private void colocarSaldoActual(HttpServletRequest request) {
                 HttpSession httpSession = request.getSession();
                 UsuarioDAO usuarioDAO = new UsuarioDAO();
-                int idUsuario = (int) httpSession.getAttribute("usuarioId");
                 BigDecimal saldoActual;
+                String nombreUsuario = (String) httpSession.getAttribute("nombreUsuario");
 
                 try {
-                        saldoActual = usuarioDAO.obtenerSaldo(idUsuario);
+                        saldoActual = usuarioDAO.obtenerSaldo(nombreUsuario);
                         request.setAttribute("saldo", saldoActual);
                 } catch (SQLException e) {
                         request.setAttribute("saldo", "Error al obtener el saldo actual");

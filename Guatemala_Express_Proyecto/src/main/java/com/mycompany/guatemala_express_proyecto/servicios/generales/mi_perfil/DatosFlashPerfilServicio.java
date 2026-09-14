@@ -17,6 +17,7 @@ public class DatosFlashPerfilServicio {
 
     public void guardarDatosFlash(HttpServletRequest request, Usuario usuario) {
         HttpSession session = request.getSession();
+        session.setAttribute("nombreUsuarioFlash", usuario.getNombreUsuario());
         session.setAttribute("nitFlash", usuario.getNit());
         session.setAttribute("dpiFlash", usuario.getDpi());
         session.setAttribute("nombreCompletoFlash", usuario.getNombreCompleto());
@@ -27,6 +28,7 @@ public class DatosFlashPerfilServicio {
 
     public void colocarDatosFlash(HttpServletRequest request, HttpSession session) {
         Object mensaje = session.getAttribute("mensajeFlash");
+        Object nombreUsuario = session.getAttribute("nombreUsuarioFlash");
         Object nit = session.getAttribute("nitFlash");
         Object dpi = session.getAttribute("dpiFlash");
         Object nombreCompleto = session.getAttribute("nombreCompletoFlash");
@@ -37,6 +39,11 @@ public class DatosFlashPerfilServicio {
         if (mensaje != null) {
             request.setAttribute("mensaje", mensaje);
             session.removeAttribute("mensajeFlash");
+        }
+
+        if (nombreUsuario != null) {
+            request.setAttribute("nombreUsuario", nombreUsuario);
+            session.removeAttribute("nombreUsuarioFlash");
         }
 
         if (nit != null) {

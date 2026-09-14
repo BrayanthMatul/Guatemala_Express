@@ -26,11 +26,15 @@ public class CrearUsuarioServicio {
         this.verificador = new VerificadorDatosUsuarioServicio();
     }
 
-    public int crearUsuario(Usuario usuario)
+    public boolean crearUsuario(Usuario usuario)
             throws DatosIncompletosException, NoGuardadoEnBDException, SQLException, EntidadYaRegistradaException {
 
         if (verificador.datosVacios(usuario, true)) {
             throw new DatosIncompletosException("Por favor, complete todos los campos requeridos.");
+        }
+
+        if (verificador.nombreUsuarioYaRegistrado(usuario)) {
+            throw new EntidadYaRegistradaException("El nombre de usuario ya está registrado.");
         }
 
         if (verificador.correoYaRegistrado(usuario)) {

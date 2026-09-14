@@ -16,48 +16,53 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author matul
  */
-@WebServlet(name = "ListaAdministradoresSistemaServlet", urlPatterns = {"/administrador_sistema/lista_administradores_sistema"})
+@WebServlet(name = "ListaAdministradoresSistemaServlet", urlPatterns = {
+        "/administrador_sistema/lista_administradores_sistema" })
 public class ListaAdministradoresSistemaServlet extends HttpServlet {
 
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession(false);
 
         if (session != null) {
             Object tituloModal = session.getAttribute("tituloModal");
             Object mensajeModal = session.getAttribute("mensajeModal");
 
-            if (mensajeModal != null) {
+            if (tituloModal != null) {
                 request.setAttribute("tituloModal", tituloModal);
-                request.setAttribute("mensajeModal", mensajeModal);
                 session.removeAttribute("tituloModal");
+            }
+
+            if (mensajeModal != null) {
+                request.setAttribute("mensajeModal", mensajeModal);
                 session.removeAttribute("mensajeModal");
             }
         }
-        
-        request.getRequestDispatcher("/WEB-INF/views/administrador_sistema/administradores_sistema/lista-administradores-sistema.jsp")
+
+        request.getRequestDispatcher(
+                "/WEB-INF/views/administrador_sistema/administradores_sistema/lista-administradores-sistema.jsp")
                 .forward(request, response);
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
