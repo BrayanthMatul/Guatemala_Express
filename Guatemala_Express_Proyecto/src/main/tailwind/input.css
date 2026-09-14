@@ -48,11 +48,11 @@
     }
 
     .linea {
-        @apply mb-6 text-center text-base text-gray-500;
+        @apply mb-4 text-center text-base text-gray-500;
     }
 
     .linea-sm {
-        @apply mb-6 text-center text-sm text-gray-500;
+        @apply mb-4 text-center text-sm text-gray-500;
     }
 
     .linea-sky {

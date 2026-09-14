@@ -27,4 +27,17 @@ public class UsuarioServicio {
         return usuarioDAO.obtenerUsuariosPorRol(rol);
     }
 
+    public boolean cambiarEstadoUsuario(String nombreUsuario, boolean nuevoEstado) throws SQLException {
+
+        if (nuevoEstado == false && esUltimoAdministradorActivo()) {
+            return false;
+        }
+        return usuarioDAO.actualizarEstadoUsuario(nombreUsuario, nuevoEstado);
+    }
+
+    private boolean esUltimoAdministradorActivo() throws SQLException {
+        int cantidadAdministradoresActivos = usuarioDAO.activosPorRol(Rol.ADMINISTRADOR_SISTEMA);
+        return cantidadAdministradoresActivos == 1;
+    }
+
 }

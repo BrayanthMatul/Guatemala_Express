@@ -65,6 +65,20 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean actualizarEstadoUsuario(String nombreUsuario, boolean estado) throws SQLException {
+        String sql = "UPDATE usuario SET estado = ? WHERE nombre_usuario = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setBoolean(1, estado);
+            preparedStatement.setString(2, nombreUsuario);
+
+            return preparedStatement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar el estado del usuario: " + e.getMessage());
+        }
+    }
+
     public Optional<Usuario> obtenerUsuarioPorNombreUsuario(String nombreUsuario) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
         try (Connection coneccion = ConexionDB.getConeccion();
@@ -208,6 +222,22 @@ public class UsuarioDAO {
             throw new SQLException("Error al obtener los usuarios por rol: " + e.getMessage());
         }
         return usuarios;
+    }
+
+    public int activosPorRol(Rol rol) throws SQLException {
+        String sql = "SELECT COUNT(*) AS total FROM usuario WHERE rol = ? AND estado = TRUE";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, rol.name());
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                if (result.next()) {
+                    return result.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al contar los usuarios activos por rol: " + e.getMessage());
+        }
+        return 0;
     }
 
     public boolean sumarSaldo(String nombreUsuario, BigDecimal monto, Connection coneccion) throws SQLException {
