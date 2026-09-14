@@ -77,7 +77,7 @@
                                             pattern="[A-Za-z0-9._-]{4,30}"
                                             title="Utilice entre 4 y 30 caracteres: letras, números, punto, guion o guion bajo"
                                             required
-                                            placeholder="Ejemplo: admin.gt"
+                                            placeholder="Nombre de usuario"
                                             class="input-formulario"
                                         >
                                     </div>

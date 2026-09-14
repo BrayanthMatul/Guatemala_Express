@@ -56,22 +56,28 @@
                                 </div>
 
                                 <div>
-                                    <label for="Contrasenia" class="label-formulario">
-                                        Contraseña
+                                    <label for="nombreUsuario" class="label-formulario">
+                                        Nombre de usuario
                                     </label>
-                                    
+
                                     <div class="relative">
-                                        <i class="pi pi-lock icono-input"></i>
+                                        <i class="pi pi-user icono-input"></i>
                                         <input
-                                            id="Contrasenia"
-                                            name="contrasenia"
+                                            id="nombreUsuario"
+                                            name="nombreUsuario"
                                             type="text"
-                                            value="${contrasenia}"
+                                            value="<c:out value='${requestScope.nombreUsuario}'/>"
+                                            autocomplete="username"
+                                            minlength="4"
+                                            maxlength="30"
+                                            pattern="[A-Za-z0-9._-]{4,30}"
+                                            title="Utilice entre 4 y 30 caracteres: letras, números, punto, guion o guion bajo"
                                             required
-                                            placeholder="Contraseña segura"
-                                            class="input-formulario">
+                                            placeholder="Ejemplo: admin"
+                                            class="input-formulario"
+                                        >
                                     </div>
-                                </div>
+                                </div>  
 
                                 <div>
                                     <label for="Nit" class="label-formulario">
@@ -119,6 +125,24 @@
                             </div>
 
                             <div class="formulario-y">
+
+                                 <div>
+                                    <label for="Contrasenia" class="label-formulario">
+                                        Contraseña
+                                    </label>
+                                    
+                                    <div class="relative">
+                                        <i class="pi pi-lock icono-input"></i>
+                                        <input
+                                            id="Contrasenia"
+                                            name="contrasenia"
+                                            type="text"
+                                            value="${contrasenia}"
+                                            required
+                                            placeholder="Contraseña segura"
+                                            class="input-formulario">
+                                    </div>
+                                </div>
                                 
                                 <div>
                                     <label for="Nombre Completo" class="label-formulario">
