@@ -14,6 +14,13 @@
 
 @layer components {
 
+    .contenedor-lg {
+        @apply mx-auto flex w-full flex-col max-w-5xl
+               items-center justify-center;
+
+        min-height: calc(100vh - 4rem);
+    }
+
     .contenedor {
         @apply mx-auto flex w-full flex-col max-w-3xl
                items-center justify-center;
@@ -95,5 +102,11 @@
     .icono-input {
         @apply absolute left-4 top-1/2
                -translate-y-1/2 text-gray-500;
+    }
+
+    .label-circular{
+        @apply inline-flex rounded-full
+                bg-sky-100 px-3 py-1
+                text-xs font-semibold;
     }
 }

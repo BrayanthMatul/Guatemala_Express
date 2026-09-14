@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.enums.Rol;
@@ -177,6 +179,35 @@ public class UsuarioDAO {
             throw new SQLException("Error al obtener el usuario por ID: " + e.getMessage());
         }
         return Optional.empty();
+    }
+
+    public List<Usuario> obtenerUsuariosPorRol(Rol rol) throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuario WHERE rol = ?";
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, rol.name());
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                while (result.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setNombreUsuario(result.getString("nombre_usuario"));
+                    usuario.setNit(result.getString("nit"));
+                    usuario.setDpi(result.getString("dpi"));
+                    usuario.setNombreCompleto(result.getString("nombre_completo"));
+                    usuario.setTelefono(result.getString("telefono"));
+                    usuario.setDireccion(result.getString("direccion"));
+                    usuario.setCorreoElectronico(result.getString("correo_electronico"));
+                    usuario.setContrasenia(result.getString("contrasenia"));
+                    usuario.setRol(Rol.valueOf(result.getString("rol")));
+                    usuario.setSaldo(result.getBigDecimal("saldo"));
+                    usuario.setEstado(result.getBoolean("estado"));
+                    usuarios.add(usuario);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener los usuarios por rol: " + e.getMessage());
+        }
+        return usuarios;
     }
 
     public boolean sumarSaldo(String nombreUsuario, BigDecimal monto, Connection coneccion) throws SQLException {

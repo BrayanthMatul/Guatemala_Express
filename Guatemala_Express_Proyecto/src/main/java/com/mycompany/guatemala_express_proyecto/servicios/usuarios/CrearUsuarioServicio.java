@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.guatemala_express_proyecto.servicios;
+package com.mycompany.guatemala_express_proyecto.servicios.usuarios;
 
+import com.mycompany.guatemala_express_proyecto.servicios.usuarios.VerificadorDatosUsuarioServicio;
 import java.sql.SQLException;
 
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;

@@ -5,6 +5,11 @@
 package com.mycompany.guatemala_express_proyecto.controladores.administrador_sistema.administradores_sistema;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
+import com.mycompany.guatemala_express_proyecto.enums.Rol;
+import com.mycompany.guatemala_express_proyecto.servicios.usuarios.UsuarioServicio;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,6 +24,8 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "ListaAdministradoresSistemaServlet", urlPatterns = {
         "/administrador_sistema/lista_administradores_sistema" })
 public class ListaAdministradoresSistemaServlet extends HttpServlet {
+
+    private final UsuarioServicio usuarioServicio = new UsuarioServicio();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
     // + sign on the left to edit the code.">
@@ -49,6 +56,16 @@ public class ListaAdministradoresSistemaServlet extends HttpServlet {
                 request.setAttribute("mensajeModal", mensajeModal);
                 session.removeAttribute("mensajeModal");
             }
+        }
+
+        try {
+
+            request.setAttribute("administradoresSistema",
+                    usuarioServicio.obtenerUsuariosPorRol(Rol.ADMINISTRADOR_SISTEMA));
+        } catch (SQLException e) {
+            request.setAttribute("tituloModal", "Error al obtener administradores del sistema");
+            request.setAttribute("mensajeModal",
+                    "Ocurrió un error al obtener la lista de administradores del sistema. Por favor, inténtelo de nuevo más tarde.");
         }
 
         request.getRequestDispatcher(

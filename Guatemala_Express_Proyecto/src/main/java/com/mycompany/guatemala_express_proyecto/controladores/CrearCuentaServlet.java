@@ -12,7 +12,7 @@ import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosExcep
 import com.mycompany.guatemala_express_proyecto.exceptions.EntidadYaRegistradaException;
 import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
-import com.mycompany.guatemala_express_proyecto.servicios.CrearUsuarioServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.usuarios.CrearUsuarioServicio;
 import com.mycompany.guatemala_express_proyecto.servicios.generales.mi_perfil.DatosFlashPerfilServicio;
 
 import jakarta.servlet.ServletException;

@@ -13,7 +13,7 @@ import com.mycompany.guatemala_express_proyecto.exceptions.EntidadYaRegistradaEx
 import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.exceptions.UsuarioNoEncontradoException;
 import com.mycompany.guatemala_express_proyecto.modelos.Usuario;
-import com.mycompany.guatemala_express_proyecto.servicios.VerificadorDatosUsuarioServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.usuarios.VerificadorDatosUsuarioServicio;
 
 /**
  *
