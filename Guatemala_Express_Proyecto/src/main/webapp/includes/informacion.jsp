@@ -4,23 +4,10 @@
     Author     : matul
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-    <!DOCTYPE html>
-    <%
-        if (request.getAttribute("mensaje") != null) {
-    %>
-        <div class="text-center text-sm m-5 w-full">
-            <p class="text-red-600">${mensaje}</p>
-        </div>
-    <%
-        }
-    %>
-    <%
-        if (request.getAttribute("exito") != null) {
-    %>
-        <div class="text-center text-sm m-5 w-full">
-            <p class="text-sky-700">${exito}</p>
-        </div>
-    <%
-        }
-%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+
+<c:if test="${not empty requestScope.mensaje}">
+    <p class="mb-6 text-center text-sm text-red-700">
+        <c:out value="${requestScope.mensaje}"/>
+    </p>
+</c:if>

@@ -5,182 +5,168 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
+
 <html>
+
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Consultar perfil</title>
         <jsp:include page="/includes/recursos.jsp"/>
     </head>
+
     <body>
+
         <jsp:include page="/includes/header.jsp"/>
 
-        <main class="mx-auto flex min-h-[calc(100vh-4rem)] w-full items-center justify-center">
-            <section class="rounded-2xl p-8 shadow-2xl">
+        <main class="contenedor">
+
+            <section class="tarjeta">
 
                 <jsp:include page="/includes/informacion.jsp"/>
 
-                <h2 class="text-center text-2xl font-bold text-gray-800">
+                <h2 class="titulo">
                     Informacion del Perfil
                 </h2>
 
-                <p class="mb-6 text-center text-sm text-gray-400">
-                    Rol: ${usuario.rol}
+                <p class="linea">
+                    Rol: <c:out value="${usuario.rol}"/>
                 </p>
 
+                <div class="formulario-y">
 
-                    <div class="flex flex-row gap-3">
-                        <div class="flex flex-col gap-2">
+                    <div class="formulario-x">
+
+                        <div class="formulario-y">
+
                             <div>
-                                <label 
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
                                     Correo electrónico
                                 </label>
 
                                 <div class="relative">
-                                    <i class="pi pi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-envelope icono-input"></i>
                                     <input
                                         type="email"
-                                        value="${usuario.correoElectronico}"
+                                        value="<c:out value='${usuario.correoElectronico}'/>"
                                         readonly
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        class="input-formulario">
                                 </div>
                             </div>
 
                             <div>
-                                <label 
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
+                                    Nombre de usuario
+                                </label>
+
+                                <div class="relative">
+                                    <i class="pi pi-user icono-input"></i>
+                                    <input
+                                        type="text"
+                                        value="<c:out value='${usuario.nombreUsuario}'/>"
+                                        readonly
+                                        class="input-formulario">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="label-formulario">
                                     NIT (Número de Identificación Tributaria)
                                 </label>
 
                                 <div class="relative">
-                                    <i class="pi pi-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-id-card icono-input"></i>
                                     <input
                                         type="text"
-                                        value="${usuario.nit}"
+                                        value="<c:out value='${usuario.nit}'/>"
                                         readonly
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        class="input-formulario">
                                 </div>
                             </div>
 
                             <div>
-                                <label
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
                                     DPI (Documento de Identidad Personal)
                                 </label>
-
                                 <div class="relative">
-                                    <i class="pi pi-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-id-card icono-input"></i>
                                     <input
                                         type="text"
                                         readonly
-                                        value="${usuario.dpi}"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        value="<c:out value='${usuario.dpi}'/>"
+                                        class="input-formulario">
                                 </div>
                             </div>
+
                         </div>
 
-                        <div class="flex flex-col gap-2">
+                        <div class="formulario-x">
+
                             <div>
-                                <label
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
                                     Nombre completo
                                 </label>
 
                                 <div class="relative">
-                                    <i class="pi pi-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-user icono-input"></i>
                                     <input
                                         type="text"
-                                        value="${usuario.nombreCompleto}"
+                                        value="<c:out value='${usuario.nombreCompleto}'/>"
                                         readonly
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        class="input-formulario">
                                 </div>
                             </div>
 
                             <div>
-                                <label
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
                                     Telefono
                                 </label>
 
                                 <div class="relative">
-                                    <i class="pi pi-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-phone icono-input"></i>
                                     <input
                                         type="tel"
-                                        value="${usuario.telefono}"
+                                        value="<c:out value='${usuario.telefono}'/>"
                                         readonly
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        class="input-formulario">
                                 </div>
                             </div>
 
                             <div>
-                                <label
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
+                                <label class="label-formulario">
                                     Dirección
                                 </label>
 
                                 <div class="relative">
-                                    <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
+                                    <i class="pi pi-map-marker icono-input"></i>
                                     <input
                                         type="text"
-                                        value="${usuario.direccion}"
+                                        value="<c:out value='${usuario.direccion}'/>"
                                         readonly
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                        class="input-formulario">
                                 </div>
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="mt-3 flex items-center justify-center w-full">
-                        <a href="${pageContext.request.contextPath}/perfil/editar">
-                            <button
-                            class="w-xs rounded-lg bg-amber-400 px-5 py-3
-                                font-bold text-slate-900 transition
-                                hover:bg-amber-300 focus:outline-none
-                                focus:ring-2 focus:ring-amber-400
-                                focus:ring-offset-2">
+                    <a href="${pageContext.request.contextPath}/perfil/editar">
+                        <button
+                            type="button"
+                            class="boton-principal">
                             Ir a editar perfil
-                            </button>
-                        </a>
-                    </div>
+                        </button>
+                    </a>
+
+                </div>
+
             </section>
+
         </main>
-        
+
     </body>
+
 </html>
 
-<!-- private int id;
-    private String nit;
-    private String dpi;
-    private String nombreCompleto;
-    private String telefono;
-    private String direccion;
-    private String correoElectronico;
-    private String contrasenia;
-    private Rol rol;
-    private BigDecimal saldo;
-    private boolean estado; -->

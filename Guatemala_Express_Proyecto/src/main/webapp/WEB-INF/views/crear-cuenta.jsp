@@ -4,224 +4,240 @@
     Author     : matul
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
-<html>
+
+<html lang="es">
+
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Crear cuenta</title>
         <jsp:include page="/includes/recursos.jsp"/>
     </head>
-    <body class="min-h-screen px-4 py-8">
 
-        <main class="mx-auto flex min-h-[calc(100vh-4rem)] w-full content-center justify-center">
-            <section class="rounded-2xl p-8 shadow-2xl">
+    <body>
 
-                <h2 class="text-center text-2xl font-bold text-gray-800">
+        <main class="contenedor">
+
+            <section class="tarjeta">
+
+                <h1 class="titulo">
                     Crear cuenta
-                </h2>
-                <p class="mb-6 text-center text-sm text-gray-400">
-                    Todos los datos son obligatorios, por favor ingrese sus datos.
+                </h1>
+
+                <p class="linea">
+                    Todos los datos son obligatorios. Por favor, ingrese sus datos.
                 </p>
 
                 <form method="POST" action="${pageContext.request.contextPath}/crear_cuenta">
 
-                    <div class="flex flex-row gap-3">
-                        <div class="flex flex-col gap-2">
-                            <div>
-                                <label for="Correo electrónico"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    Correo electrónico
-                                </label>
+                    <div class="formulario-y">
 
-                                <div class="relative">
-                                    <i class="pi pi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <div class="formulario-x">
 
-                                    <input
-                                        id="Correo electrónico"
-                                        name="correoElectronico"
-                                        type="email"
-                                        title="Ingrese un formato de correo valido"
-                                        value="${correoElectronico}"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                            <div class="formulario-y">
+
+                                <div>
+                                    <label for="correoElectronico" class="label-formulario">
+                                        Correo electrónico
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-envelope icono-input"></i>
+                                        <input
+                                            id="correoElectronico"
+                                            name="correoElectronico"
+                                            type="email"
+                                            value="<c:out value='${requestScope.correoElectronico}'/>"
+                                            autocomplete="email"
+                                            title="Ingrese un correo electrónico válido"
+                                            required
+                                            placeholder="nombre@correo.com"
+                                            class="input-formulario"
+                                        >
+                                    </div>
                                 </div>
+
+                                <div>
+                                    <label for="nombreUsuario" class="label-formulario">
+                                        Nombre de usuario
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-user icono-input"></i>
+                                        <input
+                                            id="nombreUsuario"
+                                            name="nombreUsuario"
+                                            type="text"
+                                            value="<c:out value='${requestScope.nombreUsuario}'/>"
+                                            autocomplete="username"
+                                            minlength="4"
+                                            maxlength="30"
+                                            pattern="[A-Za-z0-9._-]{4,30}"
+                                            title="Utilice entre 4 y 30 caracteres: letras, números, punto, guion o guion bajo"
+                                            required
+                                            placeholder="Ejemplo: admin.gt"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>                            
+
+                                <div>
+                                    <label for="nit" class="label-formulario">
+                                        NIT (Número de Identificación Tributaria)
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-id-card icono-input"></i>
+                                        <input
+                                            id="nit"
+                                            name="nit"
+                                            type="text"
+                                            maxlength="20"
+                                            pattern="[0-9]+-?[0-9Kk]"
+                                            value="<c:out value='${requestScope.nit}'/>"
+                                            title="Ingrese un NIT válido, por ejemplo 1234567-8"
+                                            required
+                                            placeholder="1234567-8"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="dpi" class="label-formulario">
+                                        DPI (Documento Personal de Identificación)
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-id-card icono-input"></i>
+                                        <input
+                                            id="dpi"
+                                            name="dpi"
+                                            type="text"
+                                            inputmode="numeric"
+                                            pattern="[0-9]{13}"
+                                            minlength="13"
+                                            maxlength="13"
+                                            value="<c:out value='${requestScope.dpi}'/>"
+                                            title="El DPI debe contener exactamente 13 números"
+                                            required
+                                            placeholder="1234567890101"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <label for="Contrasenia"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    Contraseña
-                                </label>
+                            <div class="formulario-y">
 
-                                <div class="relative">
-                                    <i class="pi pi-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                <div>
+                                    <label for="contrasenia" class="label-formulario">
+                                        Contraseña
+                                    </label>
 
-                                    <input
-                                        id="Contrasenia"
-                                        name="contrasenia"
-                                        type="text"
-                                        value="${contrasenia}"
-                                        required
-                                        placeholder="Contraseña segura"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
+                                    <div class="relative">
+                                        <i class="pi pi-lock icono-input"></i>
+                                        <input
+                                            id="contrasenia"
+                                            name="contrasenia"
+                                            type="text"
+                                            required
+                                            placeholder="Contraseña segura"
+                                            class="input-formulario"
+                                        >
+                                    </div>
                                 </div>
+
+                                <div>
+                                    <label for="nombreCompleto" class="label-formulario">
+                                        Nombre completo
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-user icono-input"></i>
+                                        <input
+                                            id="nombreCompleto"
+                                            name="nombreCompleto"
+                                            type="text"
+                                            value="<c:out value='${requestScope.nombreCompleto}'/>"
+                                            autocomplete="name"
+                                            required
+                                            placeholder="Nombre y apellidos"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="telefono" class="label-formulario">
+                                        Teléfono
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-phone icono-input"></i>
+                                        <input
+                                            id="telefono"
+                                            name="telefono"
+                                            type="tel"
+                                            inputmode="numeric"
+                                            pattern="[0-9]{8}"
+                                            minlength="8"
+                                            maxlength="8"
+                                            value="<c:out value='${requestScope.telefono}'/>"
+                                            autocomplete="tel"
+                                            title="Debe ingresar un número de 8 dígitos"
+                                            required
+                                            placeholder="55555555"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        for="direccion"
+                                        class="label-formulario"
+                                    >
+                                        Dirección
+                                    </label>
+
+                                    <div class="relative">
+                                        <i class="pi pi-map-marker icono-input"></i>
+
+                                        <input
+                                            id="direccion"
+                                            name="direccion"
+                                            type="text"
+                                            value="<c:out value='${requestScope.direccion}'/>"
+                                            autocomplete="street-address"
+                                            required
+                                            placeholder="Dirección completa"
+                                            class="input-formulario"
+                                        >
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <label for="Nit"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    NIT (Número de Identificación Tributaria)
-                                </label>
-
-                                <div class="relative">
-                                    <i class="pi pi-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
-                                    <input
-                                        id="Nit"
-                                        name="nit"
-                                        type="text"
-                                        maxlength="20"
-                                        pattern="[0-9]+-?[0-9Kk]"
-                                        title="Ingrese un NIT valido, por ejemplo 1234567-8"
-                                        value="${nit}"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="DPI"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    DPI (Documento de Identidad Personal)
-                                </label>
-
-                                <div class="relative">
-                                    <i class="pi pi-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
-                                    <input
-                                        id="DPI"
-                                        name="dpi"
-                                        type="text"
-                                        inputmode="numeric"
-                                        pattern="[0-9]{13}"
-                                        minlength="13"
-                                        maxlength="13"
-                                        value="${dpi}"
-                                        title="El DPI debe tener al menos 13 numeros"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="flex flex-col gap-2">
-                            <div>
-                                <label for="Nombre Completo"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    Nombre completo
-                                </label>
+                        <jsp:include page="/includes/informacion.jsp"/>
 
-                                <div class="relative">
-                                    <i class="pi pi-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
-                                    <input
-                                        id="Nombre Completo"
-                                        name="nombreCompleto"
-                                        type="text"
-                                        value="${nombreCompleto}"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="Telefono"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    Telefono
-                                </label>
-
-                                <div class="relative">
-                                    <i class="pi pi-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
-                                    <input
-                                        id="Telefono"
-                                        name="telefono"
-                                        type="tel"
-                                        input="numeric"
-                                        pattern="[0-9]{8}"
-                                        minlength="8"
-                                        maxlength="8"
-                                        title="Debe ingresar un numero de 8 digitos"
-                                        value="${telefono}"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="Direccion"
-                                    class="mb-2 block text-sm font-semibold text-gray-700">
-                                    Dirección
-                                </label>
-
-                                <div class="relative">
-                                    <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-
-                                    <input
-                                        id="Direccion"
-                                        name="direccion"
-                                        type="text"
-                                        value="${direccion}"
-                                        required
-                                        placeholder="1234567890123"
-                                        class="w-full rounded-lg border border-blue-200
-                                            py-3 pl-11 pr-4 text-blue-950 outline-none
-                                            transition focus:border-amber-400
-                                            focus:ring-2 focus:ring-amber-400/30">
-                                </div>
-                            </div>
-                        </div>
+                        <button type="submit" class="boton-principal">
+                            Crear cuenta
+                        </button>
+                        
                     </div>
 
-                    <jsp:include page="/includes/informacion.jsp"/>
-                    
-                    <div class="mt-3 flex items-center justify-center w-full">
-                            <button
-                                type="submit"
-                                class="w-xs rounded-lg bg-amber-400 px-5 py-3
-                                    font-bold text-slate-900 transition
-                                    hover:bg-amber-300 focus:outline-none
-                                    focus:ring-2 focus:ring-amber-400
-                                    focus:ring-offset-2">
-                                Crear cuenta
-                            </button>
-                    </div>
                 </form>
+
             </section>
+
         </main>
+
     </body>
+
 </html>

@@ -11,3 +11,78 @@
         font-family: var(--font-rubik);
     }
 }
+
+@layer components {
+
+    .contenedor {
+        @apply mx-auto flex w-full flex-col max-w-md
+               items-center justify-center;
+
+        min-height: calc(100vh - 4rem);
+    }
+
+    .text-logo {
+    @apply text-3xl font-bold text-slate-900;
+    }
+
+    .text-logo-acento {
+        @apply text-3xl font-bold text-sky-700;
+    }
+
+    .titulo {
+        @apply text-center text-2xl font-bold text-slate-900;
+    }
+
+    .linea {
+        @apply mb-6 text-center text-sm text-gray-400;
+    }
+
+    .linea-sky {
+        @apply mb-6 text-center text-sm text-sky-700;
+    }
+
+    .tarjeta {
+        @apply rounded-2xl bg-white p-8 shadow-2xl w-full;
+    }
+
+    .formulario-y {
+        @apply flex flex-col gap-4 w-full;
+    }
+
+    .formulario-x {
+        @apply flex flex-row gap-4 w-full;
+    }
+
+    .input-formulario {
+        @apply w-full rounded-lg border border-blue-200
+               py-3 pl-11 pr-4 text-blue-950
+               outline-none transition;
+    }
+
+    .input-formulario:focus {
+        @apply border-amber-400 ring-2 ring-amber-400/30;
+    }
+
+    .boton-principal {
+        @apply rounded-lg bg-amber-400
+               px-2 py-2 mb-4 font-bold text-slate-900
+               transition w-full;
+    }s
+
+    .boton-principal:hover {
+        @apply bg-amber-300;
+    }
+
+    .boton-principal:focus {
+        @apply outline-none ring-2 ring-amber-400 ring-offset-2;
+    }
+
+    .label-formulario {
+        @apply mb-2 block text-sm font-semibold text-gray-700;
+    }
+
+    .icono-input {
+        @apply absolute left-4 top-1/2
+               -translate-y-1/2 text-gray-500;
+    }
+}
