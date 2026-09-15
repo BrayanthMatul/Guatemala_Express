@@ -112,6 +112,6 @@
 
     .linea-circular{
         @apply bg-sky-100 p-4 
-        text-slate-900 rounded-full mb-4;
+        text-slate-900 rounded-full my-4;
     }
 }

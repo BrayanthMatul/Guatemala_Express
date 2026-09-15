@@ -81,7 +81,6 @@ public class MenuServicio {
 
                 MenuItem sucursales = new MenuItem("Sucursales", "/administrador_sistema/registrar_sucursales");
                 sucursales.agregarSubOpcion("Registrar sucursal", "/administrador_sistema/registrar_sucursal");
-                sucursales.agregarSubOpcion("Editar sucursal", "/administrador_sistema/editar_sucursal");
                 sucursales.agregarSubOpcion("Listar sucursales", "/administrador_sistema/lista_sucursales");
                 menu.add(sucursales);
 
