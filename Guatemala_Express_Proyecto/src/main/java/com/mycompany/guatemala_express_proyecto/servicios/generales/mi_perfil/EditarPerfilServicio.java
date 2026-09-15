@@ -42,20 +42,15 @@ public class EditarPerfilServicio {
             throw new DatosIncompletosException("Por favor, complete todos los campos requeridos.");
         }
 
-        Usuario usuarioExistente = usuarioRegistrado.get();
-        boolean mismoCorreo = usuario.getCorreoElectronico().equals(usuarioExistente.getCorreoElectronico());
-        boolean mismoNit = usuario.getNit().equals(usuarioExistente.getNit());
-        boolean mismoDpi = usuario.getDpi().equals(usuarioExistente.getDpi());
-
-        if (verificador.correoYaRegistrado(usuario) && !mismoCorreo) {
+        if (verificador.correoYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El correo electrónico ya está registrado.");
         }
 
-        if (verificador.nitYaRegistrado(usuario) && !mismoNit) {
+        if (verificador.nitYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El NIT ya está registrado.");
         }
 
-        if (verificador.dpiYaRegistrado(usuario) && !mismoDpi) {
+        if (verificador.dpiYaRegistrado(usuario)) {
             throw new EntidadYaRegistradaException("El DPI ya está registrado.");
         }
 

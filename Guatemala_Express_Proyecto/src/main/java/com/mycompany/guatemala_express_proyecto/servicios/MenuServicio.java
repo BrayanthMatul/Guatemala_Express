@@ -87,8 +87,6 @@ public class MenuServicio {
                 MenuItem administradoresSucursal = new MenuItem("Administradores sucursal", "/alquiler/solicitar");
                 administradoresSucursal.agregarSubOpcion("Registrar administrador de sucursal",
                                 "/administrador_sistema/registrar_administrador_sucursal");
-                administradoresSucursal.agregarSubOpcion("Editar administrador de sucursal",
-                                "/administrador_sistema/editar_administrador_sucursal");
                 administradoresSucursal.agregarSubOpcion("Listar administradores de sucursal",
                                 "/administrador_sistema/lista_administradores_sucursal");
                 administradoresSucursal.agregarSubOpcion("Activar/Desactivar administrador de sucursal",

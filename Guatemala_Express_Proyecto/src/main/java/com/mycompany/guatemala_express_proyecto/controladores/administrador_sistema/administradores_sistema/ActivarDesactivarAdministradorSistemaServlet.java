@@ -99,8 +99,8 @@ public class ActivarDesactivarAdministradorSistemaServlet extends HttpServlet {
                                                 "No se puede desactivar al último administrador del sistema.");
                         }
                 } catch (SQLException e) {
-                        request.setAttribute("tituloModal", "Error al cambiar el estado");
-                        request.setAttribute("mensajeModal",
+                        session.setAttribute("tituloModal", "Error al cambiar el estado");
+                        session.setAttribute("mensajeModal",
                                         "Ocurrió un error al intentar actualizar el estado del administrador del sistema. Por favor, inténtelo de nuevo más tarde.");
                 }
 

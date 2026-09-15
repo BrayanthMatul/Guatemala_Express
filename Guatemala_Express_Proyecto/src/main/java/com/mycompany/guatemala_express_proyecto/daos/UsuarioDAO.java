@@ -272,6 +272,50 @@ public class UsuarioDAO {
         return BigDecimal.ZERO;
     }
 
+    public boolean registrarUsuario(Connection coneccion, Usuario usuario) throws SQLException {
+
+        String sql = "INSERT INTO usuario (nombre_usuario, nit, dpi, nombre_completo, telefono, direccion, correo_electronico, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, usuario.getNombreUsuario());
+            preparedStatement.setString(2, usuario.getNit());
+            preparedStatement.setString(3, usuario.getDpi());
+            preparedStatement.setString(4, usuario.getNombreCompleto());
+            preparedStatement.setString(5, usuario.getTelefono());
+            preparedStatement.setString(6, usuario.getDireccion());
+            preparedStatement.setString(7, usuario.getCorreoElectronico());
+            preparedStatement.setString(8, usuario.getContrasenia());
+            preparedStatement.setString(9, usuario.getRol().name());
+
+            return preparedStatement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new SQLException(
+                    "Error al registrar el usuario: " + e.getMessage());
+        }
+    }
+
+    public boolean actualizarUsuario(
+            Connection coneccion, Usuario usuario) throws SQLException {
+
+        String sql = "UPDATE usuario SET nit = ?, dpi = ?, nombre_completo = ?, telefono = ?, direccion = ?, correo_electronico = ? WHERE nombre_usuario = ?";
+
+        try (PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+            preparedStatement.setString(1, usuario.getNit());
+            preparedStatement.setString(2, usuario.getDpi());
+            preparedStatement.setString(3, usuario.getNombreCompleto());
+            preparedStatement.setString(4, usuario.getTelefono());
+            preparedStatement.setString(5, usuario.getDireccion());
+            preparedStatement.setString(6, usuario.getCorreoElectronico());
+            preparedStatement.setString(7, usuario.getNombreUsuario());
+
+            return preparedStatement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new SQLException(
+                    "Error al actualizar el usuario: " + e.getMessage());
+        }
+    }
+
 }
 
 // usuario(

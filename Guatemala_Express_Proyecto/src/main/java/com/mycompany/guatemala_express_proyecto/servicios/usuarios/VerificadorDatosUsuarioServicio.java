@@ -76,21 +76,24 @@ public class VerificadorDatosUsuarioServicio {
         String correo = usuario.getCorreoElectronico();
         Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorCorreo(correo);
 
-        return usuarioExistente.isPresent();
+        return usuarioExistente.isPresent()
+                && !usuarioExistente.get().getNombreUsuario().equals(usuario.getNombreUsuario());
     }
 
     public boolean nitYaRegistrado(Usuario usuario) throws SQLException {
         String nit = usuario.getNit();
         Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorNit(nit);
 
-        return usuarioExistente.isPresent();
+        return usuarioExistente.isPresent()
+                && !usuarioExistente.get().getNombreUsuario().equals(usuario.getNombreUsuario());
     }
 
     public boolean dpiYaRegistrado(Usuario usuario) throws SQLException {
         String dpi = usuario.getDpi();
         Optional<Usuario> usuarioExistente = usuarioDAO.obtenerUsuarioPorDpi(dpi);
 
-        return usuarioExistente.isPresent();
+        return usuarioExistente.isPresent()
+                && !usuarioExistente.get().getNombreUsuario().equals(usuario.getNombreUsuario());
     }
 
 }
