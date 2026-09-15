@@ -151,7 +151,7 @@
 
                                             <td class="whitespace-nowrap p-4 text-center">
 
-                                                <c:url var="urlEditarAdministrador" value="/administrador_sistema/editar_administrador_sistema">
+                                                <c:url var="urlEditarAdministrador" value="/administrador_sistema/editar_admin_sistema">
                                                     <c:param name="nombreUsuario" value="${administrador.nombreUsuario}" />
                                                 </c:url>
 

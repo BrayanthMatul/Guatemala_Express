@@ -109,4 +109,9 @@
                 bg-sky-100 px-3 py-1
                 text-xs font-semibold;
     }
+
+    .linea-circular{
+        @apply bg-sky-100 p-4 
+        text-slate-900 rounded-full mb-4;
+    }
 }

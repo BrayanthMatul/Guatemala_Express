@@ -667,6 +667,13 @@
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
+  .linea-circular {
+    margin-bottom: calc(var(--spacing) * 4);
+    border-radius: calc(infinity * 1px);
+    background-color: var(--color-sky-100);
+    padding: calc(var(--spacing) * 4);
+    color: var(--color-slate-900);
+  }
 }
 @property --tw-translate-x {
   syntax: "*";
