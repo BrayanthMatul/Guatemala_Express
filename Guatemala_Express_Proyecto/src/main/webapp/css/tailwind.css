@@ -310,6 +310,9 @@
   .h-full {
     height: 100%;
   }
+  .w-\[50px\] {
+    width: 50px;
+  }
   .w-\[80px\] {
     width: 80px;
   }
@@ -386,6 +389,9 @@
   }
   .overflow-x-auto {
     overflow-x: auto;
+  }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
   }
   .rounded-lg {
     border-radius: var(--radius-lg);

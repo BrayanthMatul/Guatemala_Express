@@ -117,7 +117,6 @@ public class MenuServicio {
 
                 MenuItem chofer = new MenuItem("Chofer", "/administrador_sucursal/registrar_chofer");
                 chofer.agregarSubOpcion("Registrar chofer", "/administrador_sucursal/registrar_chofer");
-                chofer.agregarSubOpcion("Editar chofer", "/administrador_sucursal/editar_chofer");
                 chofer.agregarSubOpcion("Listar choferes", "/administrador_sucursal/listar_choferes");
                 chofer.agregarSubOpcion("Activar/Desactivar chofer",
                                 "/administrador_sucursal/activar_desactivar_chofer");
@@ -125,7 +124,6 @@ public class MenuServicio {
 
                 MenuItem rutas = new MenuItem("Rutas", "/administrador_sucursal/registrar_rutas");
                 rutas.agregarSubOpcion("Registrar ruta", "/administrador_sucursal/registrar_rutas");
-                rutas.agregarSubOpcion("Editar ruta", "/administrador_sucursal/editar_rutas");
                 rutas.agregarSubOpcion("Listar rutas", "/administrador_sucursal/listar_rutas");
                 rutas.agregarSubOpcion("Eliminar ruta", "/administrador_sucursal/eliminar_ruta");
                 menu.add(rutas);
