@@ -7,6 +7,7 @@ package com.mycompany.guatemala_express_proyecto.servicios.administrador_sucursa
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.daos.AdministradorSucursalDAO;
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;
@@ -153,6 +154,11 @@ public class AdministradorSucursalServicio {
 
     public List<AdministradorSucursal> obtenerAdministradoresSucursal() throws SQLException {
         return administradorSucursalDAO.obtenerAdministradoresSucursal();
+    }
+
+    public Optional<AdministradorSucursal> obtenerAdministradorSucursalPorNombreUsuario(String nombreUsuario)
+            throws SQLException {
+        return administradorSucursalDAO.obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
     }
 
 }

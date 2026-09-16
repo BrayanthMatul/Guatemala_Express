@@ -107,8 +107,8 @@ public class MenuServicio {
         }
 
         private void agregarMenuAdministradorSucursal(List<MenuItem> menu) {
-                MenuItem buses = new MenuItem("Buses", "/administrador_sucursal/registrar_buses");
-                buses.agregarSubOpcion("Registrar bus", "/administrador_sucursal/registrar_buses");
+                MenuItem buses = new MenuItem("Buses", "/administrador_sucursal/registrar_bus");
+                buses.agregarSubOpcion("Registrar bus", "/administrador_sucursal/registrar_bus");
                 buses.agregarSubOpcion("Lista de buses",
                                 "/administrador_sucursal/listar_buses");
                 buses.agregarSubOpcion("Activar/Desactivar",
