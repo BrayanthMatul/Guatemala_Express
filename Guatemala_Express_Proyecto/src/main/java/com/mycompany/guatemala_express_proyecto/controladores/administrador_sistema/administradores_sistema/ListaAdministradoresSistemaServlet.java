@@ -41,25 +41,22 @@ public class ListaAdministradoresSistemaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
 
-        if (session != null) {
-            Object tituloModal = session.getAttribute("tituloModal");
-            Object mensajeModal = session.getAttribute("mensajeModal");
+        Object tituloModal = session.getAttribute("tituloModal");
+        Object mensajeModal = session.getAttribute("mensajeModal");
 
-            if (tituloModal != null) {
-                request.setAttribute("tituloModal", tituloModal);
-                session.removeAttribute("tituloModal");
-            }
+        if (tituloModal != null) {
+            request.setAttribute("tituloModal", tituloModal);
+            session.removeAttribute("tituloModal");
+        }
 
-            if (mensajeModal != null) {
-                request.setAttribute("mensajeModal", mensajeModal);
-                session.removeAttribute("mensajeModal");
-            }
+        if (mensajeModal != null) {
+            request.setAttribute("mensajeModal", mensajeModal);
+            session.removeAttribute("mensajeModal");
         }
 
         try {
-
             request.setAttribute("administradoresSistema",
                     usuarioServicio.obtenerUsuariosPorRol(Rol.ADMINISTRADOR_SISTEMA));
         } catch (SQLException e) {

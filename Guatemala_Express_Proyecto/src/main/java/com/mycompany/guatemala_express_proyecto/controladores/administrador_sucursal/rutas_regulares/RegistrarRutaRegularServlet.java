@@ -2,49 +2,49 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.buses;
+
+package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.rutas_regulares;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
 import com.mycompany.guatemala_express_proyecto.exceptions.EntidadYaRegistradaException;
 import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.AdministradorSucursal;
-import com.mycompany.guatemala_express_proyecto.modelos.Bus;
+import com.mycompany.guatemala_express_proyecto.modelos.RutaRegular;
 import com.mycompany.guatemala_express_proyecto.modelos.Sucursal;
 import com.mycompany.guatemala_express_proyecto.servicios.administrador_sucursal.AdministradorSucursalServicio;
-import com.mycompany.guatemala_express_proyecto.servicios.buses.BusServicio;
-import com.mycompany.guatemala_express_proyecto.servicios.buses.DatosFlashBusServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.ruta_regular.DatosFlashRutaRegularServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.ruta_regular.RutaRegularServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.sucursales.SucursalServicio;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
 
 /**
  *
  * @author matul
  */
-@MultipartConfig(maxFileSize = 5L * 1024 * 1024, maxRequestSize = 6L * 1024 * 1024)
-@WebServlet(name = "RegistrarBusServlet", urlPatterns = { "/administrador_sucursal/registrar_bus" })
-public class RegistrarBusServlet extends HttpServlet {
+@WebServlet(name = "RegistrarRutaRegularServlet", urlPatterns = { "/administrador_sucursal/registrar_ruta_regular" })
+public class RegistrarRutaRegularServlet extends HttpServlet {
 
-    private final BusServicio busServicio = new BusServicio();
+    private final RutaRegularServicio rutaRegularServicio = new RutaRegularServicio();
+    private final SucursalServicio sucursalServicio = new SucursalServicio();
     private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
-    private final DatosFlashBusServicio datosFlashBusServicio = new DatosFlashBusServicio();
+    private final DatosFlashRutaRegularServicio datosFlashRutaRegularServicio = new DatosFlashRutaRegularServicio();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
-     *
+     * 
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -53,35 +53,38 @@ public class RegistrarBusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
-        datosFlashBusServicio.colocarDatosFlash(request, session);
+        datosFlashRutaRegularServicio.colocarDatosFlash(request, session);
         String nombreUsuario = (String) session.getAttribute("nombreUsuario");
 
         try {
-
             Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
                     .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
 
             if (administradorOptional.isPresent()) {
-                request.setAttribute("sucursal", administradorOptional.get().getSucursal());
-                request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/buses/registrar-bus.jsp")
+                Sucursal sucursalOrigen = administradorOptional.get().getSucursal();
+                request.setAttribute("sucursalOrigen", sucursalOrigen);
+                request.setAttribute("sucursales", sucursalServicio.obtenerSucursales());
+                request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/rutas_regulares/registrar-ruta.jsp")
                         .forward(request, response);
             } else {
                 session.setAttribute("tituloModal", "Error");
                 session.setAttribute("mensajeModal", "No se encontró la sucursal asignada al administrador.");
-                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_rutas_regulares");
             }
+
         } catch (SQLException e) {
-            session.setAttribute("tituloModal", "Error");
-            session.setAttribute("mensajeModal", "No fue posible obtener la sucursal asignada.");
-            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+            session.setAttribute("tituloModal", "Error al cargar el formulario");
+            session.setAttribute("mensajeModal", "No fue posible obtener las sucursales.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_rutas_regulares");
         }
 
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     *
+     * 
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -93,7 +96,7 @@ public class RegistrarBusServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String nombreUsuario = (String) session.getAttribute("nombreUsuario");
-        Bus bus = null;
+        RutaRegular rutaRegular = null;
 
         try {
             Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
@@ -102,66 +105,78 @@ public class RegistrarBusServlet extends HttpServlet {
             if (administradorOptional.isEmpty()) {
                 session.setAttribute("tituloModal", "Error");
                 session.setAttribute("mensajeModal", "No se encontró la sucursal asignada al administrador.");
-                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_rutas_regulares");
                 return;
             }
 
-            bus = construirBus(request, administradorOptional.get().getSucursal());
-            busServicio.registrarBus(bus);
+            Sucursal sucursalOrigen = administradorOptional.get().getSucursal();
+            rutaRegular = construirRuta(request, sucursalOrigen);
+            rutaRegularServicio.registrarNuevaRuta(rutaRegular);
             session.setAttribute("tituloModal", "Registro exitoso");
-            session.setAttribute("mensajeModal", "El bus fue registrado correctamente.");
-            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+            session.setAttribute("mensajeModal", "La ruta regular fue registrada correctamente.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_rutas_regulares");
         } catch (DatosIncompletosException | EntidadYaRegistradaException | NoGuardadoEnBDException | SQLException e) {
             session.setAttribute("mensajeFlash", e.getMessage());
-
-            if (bus != null) {
-                datosFlashBusServicio.guardarDatosFlash(request, bus);
+            if (rutaRegular != null) {
+                datosFlashRutaRegularServicio.guardarDatosFlash(request, rutaRegular);
             }
 
-            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/registrar_bus");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/registrar_ruta_regular");
         }
     }
 
-    private Bus construirBus(HttpServletRequest request, Sucursal sucursal) throws IOException, ServletException {
+    private RutaRegular construirRuta(HttpServletRequest request, Sucursal sucursalOrigen) {
 
-        Bus bus = new Bus();
+        Sucursal sucursalDestino = new Sucursal();
+        sucursalDestino.setId(convertirEntero(request.getParameter("idSucursalDestino")));
+        RutaRegular rutaRegular = new RutaRegular();
+        rutaRegular.setSucursalOrigen(sucursalOrigen);
+        rutaRegular.setSucursalDestino(sucursalDestino);
+        rutaRegular.setDistanciaAproximadaKm(convertirDecimal(request.getParameter("distanciaAproximadaKm")));
+        rutaRegular.setPrecioBoleto(convertirDecimal(request.getParameter("precioBoleto")));
+        rutaRegular.setDuracionEstimada(convertirDuracion(request.getParameter("duracionEstimada")));
 
-        bus.setNumeroPlaca(request.getParameter("numeroPlaca"));
-        bus.setSucursal(sucursal);
-        bus.setMarca(request.getParameter("marca"));
-        bus.setModelo(request.getParameter("modelo"));
-        bus.setAnioFabricacion(convertirEntero(request.getParameter("anioFabricacion")));
-        bus.setCapacidadPasajeros(convertirEntero(request.getParameter("capacidadPasajeros")));
-        bus.setKilometrajeActual(convertirDecimal(request.getParameter("kilometrajeActual")));
-        Part fotografiaPart = request.getPart("fotografia");
-
-        if (fotografiaPart != null && fotografiaPart.getSize() > 0) {
-            bus.setFotografia(fotografiaPart.getInputStream().readAllBytes());
-        }
-
-        return bus;
+        return rutaRegular;
     }
 
     private int convertirEntero(String valor) {
+
         if (valor == null || valor.isBlank()) {
             return 0;
         }
 
         try {
             return Integer.parseInt(valor);
+
         } catch (NumberFormatException e) {
             return 0;
         }
     }
 
     private BigDecimal convertirDecimal(String valor) {
+
         if (valor == null || valor.isBlank()) {
             return null;
         }
 
         try {
             return new BigDecimal(valor);
+
         } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private LocalTime convertirDuracion(String valor) {
+
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+
+        try {
+            return LocalTime.parse(valor);
+
+        } catch (DateTimeParseException e) {
             return null;
         }
     }

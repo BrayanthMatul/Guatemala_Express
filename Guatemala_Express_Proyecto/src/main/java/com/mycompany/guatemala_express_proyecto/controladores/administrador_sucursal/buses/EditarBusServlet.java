@@ -37,186 +37,171 @@ import jakarta.servlet.http.Part;
 @WebServlet(name = "EditarBusServlet", urlPatterns = { "/administrador_sucursal/editar_bus" })
 public class EditarBusServlet extends HttpServlet {
 
-        private final BusServicio busServicio = new BusServicio();
-        private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
-        private final DatosFlashBusServicio datosFlashBusServicio = new DatosFlashBusServicio();
+    private final BusServicio busServicio = new BusServicio();
+    private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
+    private final DatosFlashBusServicio datosFlashBusServicio = new DatosFlashBusServicio();
 
-        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-        // + sign on the left to edit the code.">
-        /**
-         * Handles the HTTP <code>GET</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                HttpSession session = request.getSession(false);
-                String numeroPlaca = request.getParameter("numeroPlaca");
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String numeroPlaca = request.getParameter("numeroPlaca");
+        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
 
-                if (numeroPlaca == null || numeroPlaca.isBlank()) {
-                        request.setAttribute("tituloModal", "Error");
-                        request.setAttribute("mensajeModal", "No se indicó el bus que desea editar.");
-                } else if (session == null) {
-                        request.setAttribute("tituloModal", "Error");
-                        request.setAttribute("mensajeModal", "No se encontró una sesión activa.");
-
-                } else {
-                        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
-
-                        try {
-
-                                Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
-                                                .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
-                                Optional<Bus> busOptional = busServicio.obtenerBusPorNumeroPlaca(numeroPlaca);
-
-                                if (administradorOptional.isEmpty() || busOptional.isEmpty()) {
-                                        request.setAttribute("tituloModal", "Error");
-                                        request.setAttribute("mensajeModal", "No se encontró el bus que desea editar.");
-                                } else {
-
-                                        Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
-                                        Bus bus = busOptional.get();
-
-                                        if (bus.getSucursal().getId() != sucursalAdministrador.getId()) {
-                                                request.setAttribute("tituloModal", "Error");
-                                                request.setAttribute("mensajeModal",
-                                                                "El bus no pertenece a su sucursal.");
-                                        } else {
-                                                request.setAttribute("sucursal", sucursalAdministrador);
-                                                Object edicionBusFlash = session.getAttribute("edicionBusFlash");
-
-                                                if (edicionBusFlash != null) {
-                                                        datosFlashBusServicio.colocarDatosFlash(request, session);
-                                                        request.setAttribute("numeroPlaca", numeroPlaca);
-                                                        session.removeAttribute("edicionBusFlash");
-                                                } else {
-                                                        colocarDatosBusEnRequest(request, bus);
-                                                }
-                                        }
-                                }
-
-                        } catch (SQLException e) {
-                                request.setAttribute("tituloModal", "Error");
-                                request.setAttribute("mensajeModal", "No fue posible obtener la información del bus.");
-                        }
-                }
-
-                request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/buses/editar-bus.jsp")
-                                .forward(request, response);
+        if (numeroPlaca == null || numeroPlaca.isBlank()) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No se indicó el bus que desea editar.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+            return;
         }
 
-        /**
-         * Handles the HTTP <code>POST</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                HttpSession session = request.getSession();
+        try {
+            Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
+                    .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
+            Optional<Bus> busOptional = busServicio.obtenerBusPorNumeroPlaca(numeroPlaca);
 
-                String numeroPlaca = request.getParameter("numeroPlaca");
-                String nombreUsuario = (String) session.getAttribute("nombreUsuario");
-                Bus bus = null;
+            if (administradorOptional.isEmpty() || busOptional.isEmpty()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No se encontró el bus que desea editar.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                return;
+            }
 
-                try {
+            Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+            Bus bus = busOptional.get();
 
-                        Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
-                                        .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
-                        Optional<Bus> busActualOptional = busServicio.obtenerBusPorNumeroPlaca(numeroPlaca);
+            if (bus.getSucursal().getId() != sucursalAdministrador.getId()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "El bus no pertenece a su sucursal.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                return;
+            }
 
-                        if (administradorOptional.isEmpty() || busActualOptional.isEmpty()) {
-                                throw new NoGuardadoEnBDException("No se encontró el bus que desea actualizar.");
-                        }
+            if (session.getAttribute("edicionBus") != null) {
+                datosFlashBusServicio.colocarDatosFlash(request, session);
+                session.removeAttribute("edicionBus");
+            } else {
+                colocarDatosBusEnRequest(request, bus);
+            }
 
-                        Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+            request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/buses/editar-bus.jsp")
+                    .forward(request, response);
 
-                        if (busActualOptional.get().getSucursal().getId() != sucursalAdministrador.getId()) {
-                                throw new NoGuardadoEnBDException("El bus no pertenece a su sucursal.");
-                        }
-
-                        bus = construirBus(request, sucursalAdministrador);
-                        busServicio.editarBus(bus);
-                        session.setAttribute("tituloModal", "Actualización exitosa");
-                        session.setAttribute("mensajeModal", "El bus fue actualizado correctamente.");
-                        response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
-                } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException e) {
-                        session.setAttribute("mensajeFlash", e.getMessage());
-
-                        if (bus != null) {
-                                datosFlashBusServicio.guardarDatosFlash(request, bus);
-                        }
-
-                        session.setAttribute("edicionBusFlash", true);
-
-                        if (numeroPlaca != null && !numeroPlaca.isBlank()) {
-                                response.sendRedirect(request.getContextPath()
-                                                + "/administrador_sucursal/editar_bus?numeroPlaca="
-                                                + URLEncoder.encode(numeroPlaca, StandardCharsets.UTF_8));
-
-                        } else {
-                                response.sendRedirect(
-                                                request.getContextPath() + "/administrador_sucursal/listar_buses");
-                        }
-                }
+        } catch (SQLException e) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No fue posible obtener la información del bus.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
         }
 
-        private Bus construirBus(HttpServletRequest request, Sucursal sucursal) throws IOException, ServletException {
-                Bus bus = new Bus();
-                bus.setNumeroPlaca(request.getParameter("numeroPlaca"));
-                bus.setSucursal(sucursal);
-                bus.setMarca(request.getParameter("marca"));
-                bus.setModelo(request.getParameter("modelo"));
-                bus.setAnioFabricacion(convertirEntero(request.getParameter("anioFabricacion")));
-                bus.setCapacidadPasajeros(convertirEntero(request.getParameter("capacidadPasajeros")));
-                Part fotografiaPart = request.getPart("fotografia");
+    }
 
-                if (fotografiaPart != null && fotografiaPart.getSize() > 0) {
-                        bus.setFotografia(fotografiaPart.getInputStream().readAllBytes());
-                }
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
+        String numeroPlaca = request.getParameter("numeroPlaca");
+        Bus bus = null;
 
-                return bus;
+        try {
+
+            Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
+                    .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
+            Optional<Bus> busActualOptional = busServicio.obtenerBusPorNumeroPlaca(numeroPlaca);
+
+            if (administradorOptional.isEmpty() || busActualOptional.isEmpty()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No se encontró el bus que desea editar.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                return;
+            }
+
+            Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+
+            if (busActualOptional.get().getSucursal().getId() != sucursalAdministrador.getId()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "El bus no pertenece a su sucursal.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+                return;
+            }
+
+            bus = construirBus(request, sucursalAdministrador);
+            busServicio.editarBus(bus);
+            session.setAttribute("tituloModal", "Actualización exitosa");
+            session.setAttribute("mensajeModal", "El bus fue actualizado correctamente.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException e) {
+
+            if (bus != null) {
+                session.setAttribute("mensajeFlash", e.getMessage());
+                datosFlashBusServicio.guardarDatosFlash(request, bus);
+                session.setAttribute("edicionBus", true);
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/editar_bus?numeroPlaca="
+                        + URLEncoder.encode(numeroPlaca, StandardCharsets.UTF_8));
+            } else {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No se encontró el bus que desea editar.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_buses");
+            }
+
+        }
+    }
+
+    private Bus construirBus(HttpServletRequest request, Sucursal sucursal) throws IOException, ServletException {
+        Bus bus = new Bus();
+        bus.setNumeroPlaca(request.getParameter("numeroPlaca"));
+        bus.setSucursal(sucursal);
+        bus.setMarca(request.getParameter("marca"));
+        bus.setModelo(request.getParameter("modelo"));
+        bus.setAnioFabricacion(convertirEntero(request.getParameter("anioFabricacion")));
+        bus.setCapacidadPasajeros(convertirEntero(request.getParameter("capacidadPasajeros")));
+        Part fotografiaPart = request.getPart("fotografia");
+
+        if (fotografiaPart != null && fotografiaPart.getSize() > 0) {
+            bus.setFotografia(fotografiaPart.getInputStream().readAllBytes());
         }
 
-        private void colocarDatosBusEnRequest(HttpServletRequest request, Bus bus) {
-                request.setAttribute("numeroPlaca", bus.getNumeroPlaca());
-                request.setAttribute("marca", bus.getMarca());
-                request.setAttribute("modelo", bus.getModelo());
-                request.setAttribute("anioFabricacion", bus.getAnioFabricacion());
-                request.setAttribute("capacidadPasajeros", bus.getCapacidadPasajeros());
+        return bus;
+    }
+
+    private void colocarDatosBusEnRequest(HttpServletRequest request, Bus bus) {
+        request.setAttribute("sucursal", bus.getSucursal());
+        request.setAttribute("numeroPlaca", bus.getNumeroPlaca());
+        request.setAttribute("marca", bus.getMarca());
+        request.setAttribute("modelo", bus.getModelo());
+        request.setAttribute("anioFabricacion", bus.getAnioFabricacion());
+        request.setAttribute("capacidadPasajeros", bus.getCapacidadPasajeros());
+    }
+
+    private int convertirEntero(String valor) {
+
+        if (valor == null || valor.isBlank()) {
+            return 0;
         }
 
-        private int convertirEntero(String valor) {
-
-                if (valor == null || valor.isBlank()) {
-                        return 0;
-                }
-
-                try {
-                        return Integer.parseInt(valor);
-                } catch (NumberFormatException e) {
-                        return 0;
-                }
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            return 0;
         }
-
-        private BigDecimal convertirDecimal(String valor) {
-
-                if (valor == null || valor.isBlank()) {
-                        return null;
-                }
-
-                try {
-                        return new BigDecimal(valor);
-                } catch (NumberFormatException e) {
-                        return null;
-                }
-        }
+    }
 
 }

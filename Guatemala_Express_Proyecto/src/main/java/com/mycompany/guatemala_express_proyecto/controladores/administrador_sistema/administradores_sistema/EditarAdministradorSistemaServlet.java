@@ -38,15 +38,18 @@ public class EditarAdministradorSistemaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         String nombreUsuario = request.getParameter("nombreUsuario");
 
         if (nombreUsuario == null || nombreUsuario.isBlank()) {
-            request.setAttribute("tituloModal", "Error");
-            request.setAttribute("mensajeModal", "No se indicó el administrador del sistema.");
-        } else if (session != null && session.getAttribute("edicion") != null) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No se indicó el administrador del sistema.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/lista_administradores_sistema");
+            return;
+        }
+
+        if (session.getAttribute("edicion") != null) {
             datosFlashPerfilServicio.colocarDatosFlash(request, session);
-            request.setAttribute("nombreUsuario", nombreUsuario);
             session.removeAttribute("edicion");
         } else {
             UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -55,16 +58,20 @@ public class EditarAdministradorSistemaServlet extends HttpServlet {
 
                 if (usuarioOptional.isPresent()) {
                     colocarDatosUsuarioEnRequest(request, usuarioOptional.get());
-
                 } else {
-                    request.setAttribute("tituloModal", "Error");
-                    request.setAttribute("mensajeModal", "No se encontró el administrador del sistema.");
+                    session.setAttribute("tituloModal", "Error");
+                    session.setAttribute("mensajeModal", "No se encontró el administrador del sistema.");
+                    response.sendRedirect(request.getContextPath()
+                            + "/administrador_sistema/lista_administradores_sistema");
+                    return;
                 }
 
             } catch (SQLException e) {
-                request.setAttribute("tituloModal", "Error");
-                request.setAttribute("mensajeModal",
-                        "No fue posible cargar la información del administrador.");
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No fue posible cargar la información del administrador.");
+                response.sendRedirect(
+                        request.getContextPath() + "/administrador_sistema/lista_administradores_sistema");
+                return;
             }
         }
 
@@ -90,16 +97,11 @@ public class EditarAdministradorSistemaServlet extends HttpServlet {
 
         try {
             editorPerfilServicio.actualizarPerfil(usuario);
-
             session.setAttribute("tituloModal", "Éxito");
             session.setAttribute("mensajeModal", "Administrador del sistema actualizado exitosamente.");
-            response.sendRedirect(request.getContextPath()
-                    + "/administrador_sistema/lista_administradores_sistema");
-
-        } catch (DatosIncompletosException | NoGuardadoEnBDException
-                | SQLException | EntidadYaRegistradaException
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/lista_administradores_sistema");
+        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException
                 | UsuarioNoEncontradoException e) {
-
             session.setAttribute("mensajeFlash", e.getMessage());
             datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
             session.setAttribute("edicion", true);

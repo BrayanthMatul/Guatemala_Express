@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.buses;
+
+package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.rutas_regulares;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -11,10 +12,10 @@ import java.util.Optional;
 import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
 import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.AdministradorSucursal;
-import com.mycompany.guatemala_express_proyecto.modelos.Bus;
+import com.mycompany.guatemala_express_proyecto.modelos.RutaRegular;
 import com.mycompany.guatemala_express_proyecto.modelos.Sucursal;
 import com.mycompany.guatemala_express_proyecto.servicios.administrador_sucursal.AdministradorSucursalServicio;
-import com.mycompany.guatemala_express_proyecto.servicios.buses.BusServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.ruta_regular.RutaRegularServicio;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,17 +28,16 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author matul
  */
-@WebServlet(name = "ActivarDesactivarBusServlet", urlPatterns = { "/administrador_sucursal/activar_desactivar_bus" })
-public class ActivarDesactivarBusServlet extends HttpServlet {
+@WebServlet(name = "ActivarDesactivarRutaRegular", urlPatterns = {
+        "/administrador_sucursal/activar_desactivar_ruta_regular" })
+public class ActivarDesactivarRutaRegular extends HttpServlet {
 
-    private final BusServicio busServicio = new BusServicio();
+    private final RutaRegularServicio rutaRegularServicio = new RutaRegularServicio();
     private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
-     *
+     * 
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -46,11 +46,13 @@ public class ActivarDesactivarBusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
-        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
 
         Object tituloModal = session.getAttribute("tituloModal");
         Object mensajeModal = session.getAttribute("mensajeModal");
+
+        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
 
         if (tituloModal != null) {
             request.setAttribute("tituloModal", tituloModal);
@@ -63,7 +65,6 @@ public class ActivarDesactivarBusServlet extends HttpServlet {
         }
 
         try {
-
             Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
                     .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
 
@@ -73,20 +74,22 @@ public class ActivarDesactivarBusServlet extends HttpServlet {
             } else {
                 Sucursal sucursal = administradorOptional.get().getSucursal();
                 request.setAttribute("sucursal", sucursal);
-                request.setAttribute("buses", busServicio.obtenerBusesPorSucursal(sucursal.getId()));
+                request.setAttribute("rutasRegulares", rutaRegularServicio.obtenerRutasPorSucursal(sucursal.getId()));
             }
+
         } catch (SQLException e) {
-            request.setAttribute("tituloModal", "Error al obtener los buses");
-            request.setAttribute("mensajeModal", "No fue posible obtener la lista de buses de la sucursal.");
+            request.setAttribute("tituloModal", "Error al obtener las rutas regulares");
+            request.setAttribute("mensajeModal", "No fue posible obtener la lista de rutas regulares.");
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/buses/activar-desactivar-bus.jsp")
+        request.getRequestDispatcher(
+                "/WEB-INF/views/administrador_sucursal/rutas_regulares/activar-desactivar-ruta.jsp")
                 .forward(request, response);
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     *
+     * 
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -98,52 +101,67 @@ public class ActivarDesactivarBusServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String nombreUsuario = (String) session.getAttribute("nombreUsuario");
-        String numeroPlaca = request.getParameter("numeroPlaca");
+        String idRutaParametro = request.getParameter("idRuta");
         String nuevoEstadoParametro = request.getParameter("nuevoEstado");
 
+        if (nombreUsuario == null || nombreUsuario.isBlank() || idRutaParametro == null || idRutaParametro.isBlank()
+                || nuevoEstadoParametro == null || nuevoEstadoParametro.isBlank()) {
+            session.setAttribute("tituloModal", "Error al cambiar el estado");
+            session.setAttribute("mensajeModal", "Faltan datos para cambiar el estado de la ruta regular.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_ruta_regular");
+            return;
+        }
+
+        int idRuta;
+
         try {
+            idRuta = Integer.parseInt(idRutaParametro);
+        } catch (NumberFormatException e) {
+            session.setAttribute("tituloModal", "Error al cambiar el estado");
+            session.setAttribute("mensajeModal", "El identificador de la ruta regular no es válido.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_ruta_regular");
+            return;
+        }
 
-            if (nombreUsuario == null || nombreUsuario.isBlank() || numeroPlaca == null
-                    || numeroPlaca.isBlank() || nuevoEstadoParametro == null
-                    || nuevoEstadoParametro.isBlank()) {
-                session.setAttribute("tituloModal", "Error al cambiar el estado");
-                session.setAttribute("mensajeModal", "Faltan datos para cambiar el estado del bus.");
-                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_bus");
-                return;
-            }
-
+        try {
             Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
-                    .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
-            Optional<Bus> busOptional = busServicio.obtenerBusPorNumeroPlaca(numeroPlaca);
+                    .obtenerAdministradorSucursalPorNombreUsuario(
+                            nombreUsuario);
 
-            if (administradorOptional.isEmpty() || busOptional.isEmpty()) {
+            Optional<RutaRegular> rutaOptional = rutaRegularServicio.obtenerRutaPorId(idRuta);
+
+            if (administradorOptional.isEmpty() || rutaOptional.isEmpty()) {
                 session.setAttribute("tituloModal", "Error al cambiar el estado");
-                session.setAttribute("mensajeModal", "No se encontró la sucursal asignada al administrador o el bus.");
-                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_bus");
+                session.setAttribute("mensajeModal", "No se encontró la ruta regular o la sucursal asignada.");
+                response.sendRedirect(
+                        request.getContextPath() + "/administrador_sucursal/activar_desactivar_ruta_regular");
+
                 return;
             }
 
             int idSucursalAdministrador = administradorOptional.get().getSucursal().getId();
-            int idSucursalBus = busOptional.get().getSucursal().getId();
+            int idSucursalOrigen = rutaOptional.get().getSucursalOrigen().getId();
 
-            if (idSucursalBus != idSucursalAdministrador) {
+            if (idSucursalOrigen != idSucursalAdministrador) {
                 session.setAttribute("tituloModal", "Error al cambiar el estado");
-                session.setAttribute("mensajeModal",
-                        "El bus no pertenece a la sucursal asignada al administrador.");
-                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_bus");
+                session.setAttribute("mensajeModal", "La ruta regular no pertenece a su sucursal.");
+                response.sendRedirect(
+                        request.getContextPath() + "/administrador_sucursal/activar_desactivar_ruta_regular");
+
                 return;
             }
 
             boolean nuevoEstado = Boolean.parseBoolean(nuevoEstadoParametro);
-            busServicio.cambiarEstadoBus(numeroPlaca, nuevoEstado);
+            rutaRegularServicio.actualizarEstado(idRuta, nuevoEstado);
             session.setAttribute("tituloModal", "Cambio de estado exitoso");
-            session.setAttribute("mensajeModal", "El estado del bus fue actualizado correctamente.");
+            session.setAttribute("mensajeModal", "El estado de la ruta regular fue actualizado correctamente.");
+
         } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException e) {
             session.setAttribute("tituloModal", "Error al cambiar el estado");
             session.setAttribute("mensajeModal", e.getMessage());
         }
 
-        response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_bus");
+        response.sendRedirect(request.getContextPath() + "/administrador_sucursal/activar_desactivar_ruta_regular");
     }
 
 }

@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.choferes;
+package com.mycompany.guatemala_express_proyecto.controladores.administrador_sucursal.rutas_regulares;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import com.mycompany.guatemala_express_proyecto.modelos.AdministradorSucursal;
 import com.mycompany.guatemala_express_proyecto.modelos.Sucursal;
 import com.mycompany.guatemala_express_proyecto.servicios.administrador_sucursal.AdministradorSucursalServicio;
-import com.mycompany.guatemala_express_proyecto.servicios.chofer.ChoferServicio;
+import com.mycompany.guatemala_express_proyecto.servicios.ruta_regular.RutaRegularServicio;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,10 +25,10 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author matul
  */
-@WebServlet(name = "ListarChoferesServlet", urlPatterns = { "/administrador_sucursal/listar_choferes" })
-public class ListarChoferesServlet extends HttpServlet {
+@WebServlet(name = "ListaRutasRegulares", urlPatterns = { "/administrador_sucursal/listar_rutas_regulares" })
+public class ListaRutasRegulares extends HttpServlet {
 
-    private final ChoferServicio choferServicio = new ChoferServicio();
+    private final RutaRegularServicio rutaRegularServicio = new RutaRegularServicio();
     private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
 
     /**
@@ -46,7 +46,6 @@ public class ListarChoferesServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         Object tituloModal = session.getAttribute("tituloModal");
         Object mensajeModal = session.getAttribute("mensajeModal");
-        String nombreUsuario = (String) session.getAttribute("nombreUsuario");
 
         if (tituloModal != null) {
             request.setAttribute("tituloModal", tituloModal);
@@ -59,23 +58,25 @@ public class ListarChoferesServlet extends HttpServlet {
         }
 
         try {
+            String nombreUsuario = (String) session.getAttribute("nombreUsuario");
+
             Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
                     .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuario);
 
             if (administradorOptional.isPresent()) {
                 Sucursal sucursal = administradorOptional.get().getSucursal();
                 request.setAttribute("sucursal", sucursal);
-                request.setAttribute("choferes", choferServicio.obtenerChoferesPorSucursal(sucursal.getId()));
+                request.setAttribute("rutasRegulares", rutaRegularServicio.obtenerRutasPorSucursal(sucursal.getId()));
             } else {
                 request.setAttribute("tituloModal", "Error");
                 request.setAttribute("mensajeModal", "No se encontró la sucursal asignada al administrador.");
             }
         } catch (SQLException e) {
-            request.setAttribute("tituloModal", "Error al obtener los choferes");
-            request.setAttribute("mensajeModal", "No fue posible obtener la lista de choferes de la sucursal.");
+            request.setAttribute("tituloModal", "Error al obtener rutas regulares");
+            request.setAttribute("mensajeModal", "No fue posible obtener las rutas regulares de la sucursal.");
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/choferes/listar-choferes.jsp")
+        request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/" + "rutas_regulares/listar-rutas.jsp")
                 .forward(request, response);
     }
 
@@ -90,7 +91,6 @@ public class ListarChoferesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
     }
 
 }

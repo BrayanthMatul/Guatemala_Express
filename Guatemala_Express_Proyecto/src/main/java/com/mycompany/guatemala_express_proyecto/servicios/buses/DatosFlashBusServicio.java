@@ -17,6 +17,7 @@ public class DatosFlashBusServicio {
 
     public void guardarDatosFlash(HttpServletRequest request, Bus bus) {
         HttpSession session = request.getSession();
+        session.setAttribute("sucursal", bus.getSucursal());
         session.setAttribute("numeroPlacaFlash", bus.getNumeroPlaca());
         session.setAttribute("marcaFlash", bus.getMarca());
         session.setAttribute("modeloFlash", bus.getModelo());
@@ -26,11 +27,7 @@ public class DatosFlashBusServicio {
     }
 
     public void colocarDatosFlash(HttpServletRequest request, HttpSession session) {
-
-        if (session == null) {
-            return;
-        }
-
+        moverARequest(request, session, "sucursal", "sucursal");
         moverARequest(request, session, "mensajeFlash", "mensaje");
         moverARequest(request, session, "numeroPlacaFlash", "numeroPlaca");
         moverARequest(request, session, "marcaFlash", "marca");

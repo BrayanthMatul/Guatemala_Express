@@ -48,9 +48,9 @@ public class EditarPerfilServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
 
-        if (session != null && session.getAttribute("edicion") != null) {
+        if (session.getAttribute("edicion") != null) {
             datosFlashPerfilServicio.colocarDatosFlash(request, session);
             session.removeAttribute("edicion");
         } else {

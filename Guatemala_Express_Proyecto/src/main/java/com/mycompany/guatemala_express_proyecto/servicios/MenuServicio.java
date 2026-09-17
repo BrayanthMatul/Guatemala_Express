@@ -122,10 +122,11 @@ public class MenuServicio {
                                 "/administrador_sucursal/activar_desactivar_chofer");
                 menu.add(chofer);
 
-                MenuItem rutas = new MenuItem("Rutas", "/administrador_sucursal/registrar_rutas");
-                rutas.agregarSubOpcion("Registrar ruta", "/administrador_sucursal/registrar_rutas");
-                rutas.agregarSubOpcion("Listar rutas", "/administrador_sucursal/listar_rutas");
-                rutas.agregarSubOpcion("Eliminar ruta", "/administrador_sucursal/eliminar_ruta");
+                MenuItem rutas = new MenuItem("Rutas", "/administrador_sucursal/registrar_ruta_regular");
+                rutas.agregarSubOpcion("Registrar ruta", "/administrador_sucursal/registrar_ruta_regular");
+                rutas.agregarSubOpcion("Listar rutas", "/administrador_sucursal/listar_rutas_regulares");
+                rutas.agregarSubOpcion("Activar/Desactivar ruta",
+                                "/administrador_sucursal/activar_desactivar_ruta_regular");
                 menu.add(rutas);
 
                 MenuItem viajesRegulares = new MenuItem("Viajes regulares", "/administrador_sucursal/programar_viaje");

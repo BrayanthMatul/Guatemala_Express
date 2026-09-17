@@ -23,71 +23,60 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "ListaSucursalesServlet", urlPatterns = { "/administrador_sistema/lista_sucursales" })
 public class ListaSucursalesServlet extends HttpServlet {
 
-        private final SucursalServicio sucursalServicio = new SucursalServicio();
+    private final SucursalServicio sucursalServicio = new SucursalServicio();
 
-        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-        // + sign on the left to edit the code.">
-        /**
-         * Handles the HTTP <code>GET</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-                HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(false);
 
-                if (session != null) {
-                        Object tituloModal = session.getAttribute("tituloModal");
-                        Object mensajeModal = session.getAttribute("mensajeModal");
+        Object tituloModal = session.getAttribute("tituloModal");
+        Object mensajeModal = session.getAttribute("mensajeModal");
 
-                        if (tituloModal != null) {
-                                request.setAttribute("tituloModal", tituloModal);
-                                session.removeAttribute("tituloModal");
-                        }
-
-                        if (mensajeModal != null) {
-                                request.setAttribute("mensajeModal", mensajeModal);
-                                session.removeAttribute("mensajeModal");
-                        }
-                }
-
-                try {
-                        request.setAttribute(
-                                        "sucursales",
-                                        sucursalServicio.obtenerSucursales());
-
-                } catch (SQLException e) {
-                        request.setAttribute(
-                                        "tituloModal",
-                                        "Error al obtener las sucursales");
-
-                        request.setAttribute(
-                                        "mensajeModal",
-                                        "Ocurrió un error al obtener la lista de sucursales. "
-                                                        + "Por favor, inténtelo de nuevo más tarde.");
-                }
-
-                request.getRequestDispatcher(
-                                "/WEB-INF/views/administrador_sistema/sucursales/lista-sucursales.jsp")
-                                .forward(request, response);
+        if (tituloModal != null) {
+            request.setAttribute("tituloModal", tituloModal);
+            session.removeAttribute("tituloModal");
         }
 
-        /**
-         * Handles the HTTP <code>POST</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
+        if (mensajeModal != null) {
+            request.setAttribute("mensajeModal", mensajeModal);
+            session.removeAttribute("mensajeModal");
         }
+
+        try {
+            request.setAttribute("sucursales", sucursalServicio.obtenerSucursales());
+        } catch (SQLException e) {
+            request.setAttribute("tituloModal", "Error al obtener las sucursales");
+            request.setAttribute("mensajeModal",
+                    "Ocurrió un error al obtener la lista de sucursales. Por favor, inténtelo de nuevo más tarde.");
+        }
+
+        request.getRequestDispatcher("/WEB-INF/views/administrador_sistema/sucursales/lista-sucursales.jsp")
+                .forward(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    }
 
 }

@@ -41,215 +41,203 @@ import jakarta.servlet.http.Part;
 @WebServlet(name = "EditarChoferServlet", urlPatterns = { "/administrador_sucursal/editar_chofer" })
 public class EditarChoferServlet extends HttpServlet {
 
-        private final ChoferServicio choferServicio = new ChoferServicio();
-        private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
-        private final DatosFlashChoferServicio datosFlashChoferServicio = new DatosFlashChoferServicio();
+    private final ChoferServicio choferServicio = new ChoferServicio();
+    private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
+    private final DatosFlashChoferServicio datosFlashChoferServicio = new DatosFlashChoferServicio();
 
-        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-        // + sign on the left to edit the code.">
-        /**
-         * Handles the HTTP <code>GET</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                HttpSession session = request.getSession(false);
-                String nombreUsuarioChofer = request.getParameter("nombreUsuario");
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-                if (nombreUsuarioChofer == null || nombreUsuarioChofer.isBlank()) {
-                        request.setAttribute("tituloModal", "Error");
-                        request.setAttribute("mensajeModal", "No se indicó el chofer que desea editar.");
-                } else if (session == null) {
-                        request.setAttribute("tituloModal", "Error");
-                        request.setAttribute("mensajeModal", "No se encontró una sesión activa.");
+        HttpSession session = request.getSession(false);
+        String nombreUsuarioChofer = request.getParameter("nombreUsuario");
+        String nombreUsuarioAdministrador = (String) session.getAttribute("nombreUsuario");
+        Object edicionChoferFlash = session.getAttribute("edicionChoferFlash");
 
-                } else {
-                        String nombreUsuarioAdministrador = (String) session.getAttribute("nombreUsuario");
-
-                        try {
-
-                                Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
-                                                .obtenerAdministradorSucursalPorNombreUsuario(
-                                                                nombreUsuarioAdministrador);
-                                Optional<Chofer> choferOptional = choferServicio
-                                                .obtenerChoferPorNombreUsuario(nombreUsuarioChofer);
-
-                                if (administradorOptional.isEmpty() || choferOptional.isEmpty()) {
-                                        request.setAttribute("tituloModal", "Error");
-                                        request.setAttribute("mensajeModal",
-                                                        "No se encontró el chofer que desea editar.");
-                                } else {
-                                        Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
-                                        Chofer chofer = choferOptional.get();
-
-                                        if (chofer.getSucursal().getId() != sucursalAdministrador.getId()) {
-                                                request.setAttribute("tituloModal", "Error");
-                                                request.setAttribute("mensajeModal",
-                                                                "El chofer no pertenece a su sucursal.");
-                                        } else {
-                                                request.setAttribute("sucursal", sucursalAdministrador);
-                                                Object edicionChoferFlash = session.getAttribute("edicionChoferFlash");
-
-                                                if (edicionChoferFlash != null) {
-                                                        datosFlashChoferServicio.colocarDatosFlash(request, session);
-                                                        request.setAttribute("nombreUsuario", nombreUsuarioChofer);
-                                                        session.removeAttribute("edicionChoferFlash");
-                                                } else {
-                                                        colocarDatosChoferEnRequest(request, chofer);
-                                                }
-                                        }
-                                }
-
-                        } catch (SQLException e) {
-                                request.setAttribute("tituloModal", "Error");
-                                request.setAttribute("mensajeModal",
-                                                "No fue posible obtener la información del chofer.");
-                        }
-                }
-
-                request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/choferes/editar-chofer.jsp")
-                                .forward(request, response);
+        if (nombreUsuarioChofer == null || nombreUsuarioChofer.isBlank()) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No se indicó el chofer que desea editar.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+            return;
         }
 
-        /**
-         * Handles the HTTP <code>POST</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                HttpSession session = request.getSession();
-                String nombreUsuarioChofer = request.getParameter("nombreUsuario");
-                String nombreUsuarioAdministrador = (String) session.getAttribute("nombreUsuario");
-                Chofer chofer = null;
+        try {
+            Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
+                    .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuarioAdministrador);
+            Optional<Chofer> choferOptional = choferServicio.obtenerChoferPorNombreUsuario(nombreUsuarioChofer);
 
-                try {
-                        Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
-                                        .obtenerAdministradorSucursalPorNombreUsuario(
-                                                        nombreUsuarioAdministrador);
-                        Optional<Chofer> choferActualOptional = choferServicio
-                                        .obtenerChoferPorNombreUsuario(nombreUsuarioChofer);
+            if (administradorOptional.isEmpty() || choferOptional.isEmpty()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No se encontró el chofer que desea editar.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+                return;
+            }
 
-                        if (administradorOptional.isEmpty() || choferActualOptional.isEmpty()) {
-                                throw new NoGuardadoEnBDException("No se encontró el chofer que desea actualizar.");
-                        }
+            Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+            Chofer chofer = choferOptional.get();
 
-                        Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+            if (chofer.getSucursal().getId() != sucursalAdministrador.getId()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "El chofer no pertenece a su sucursal.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+                return;
+            }
 
-                        if (choferActualOptional.get().getSucursal().getId() != sucursalAdministrador.getId()) {
-                                throw new NoGuardadoEnBDException("El chofer no pertenece a su sucursal.");
-                        }
+            if (edicionChoferFlash != null) {
+                datosFlashChoferServicio.colocarDatosFlash(request, session);
+                session.removeAttribute("edicionChoferFlash");
+            } else {
+                colocarDatosChoferEnRequest(request, chofer);
+            }
 
-                        chofer = construirChofer(request, sucursalAdministrador);
-                        choferServicio.actualizarChofer(chofer);
-                        session.setAttribute("tituloModal", "Actualización exitosa");
-                        session.setAttribute("mensajeModal", "El chofer fue actualizado correctamente.");
-                        response.sendRedirect(request.getContextPath()
-                                        + "/administrador_sucursal/listar_choferes");
+            request.getRequestDispatcher("/WEB-INF/views/administrador_sucursal/choferes/editar-chofer.jsp")
+                    .forward(request, response);
 
-                } catch (DatosIncompletosException | EntidadYaRegistradaException | NoGuardadoEnBDException
-                                | SQLException e) {
-
-                        session.setAttribute("mensajeFlash", e.getMessage());
-
-                        if (chofer != null) {
-                                datosFlashChoferServicio.guardarDatosFlash(request, chofer);
-                        }
-
-                        session.setAttribute("edicionChoferFlash", true);
-
-                        if (nombreUsuarioChofer != null
-                                        && !nombreUsuarioChofer.isBlank()) {
-
-                                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/editar_chofer"
-                                                + "?nombreUsuario="
-                                                + URLEncoder.encode(nombreUsuarioChofer, StandardCharsets.UTF_8));
-
-                        } else {
-                                response.sendRedirect(
-                                                request.getContextPath() + "/administrador_sucursal/listar_choferes");
-                        }
-                }
+        } catch (SQLException e) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No fue posible obtener la información del chofer.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
         }
 
-        private Chofer construirChofer(HttpServletRequest request, Sucursal sucursal)
-                        throws IOException, ServletException {
-                Chofer chofer = new Chofer();
-                chofer.setUsuario(construirUsuario(request));
-                chofer.setSucursal(sucursal);
-                chofer.setNumeroLicencia(request.getParameter("numeroLicencia"));
-                chofer.setTipoLicencia(request.getParameter("tipoLicencia"));
-                chofer.setFechaVencimientoLicencia(convertirFecha(request.getParameter("fechaVencimientoLicencia")));
-                chofer.setSalarioBasePorViaje(convertirDecimal(request.getParameter("salarioBasePorViaje")));
-                Part fotografiaPart = request.getPart("fotografia");
+    }
 
-                if (fotografiaPart != null && fotografiaPart.getSize() > 0) {
-                        chofer.setFotografia(fotografiaPart.getInputStream().readAllBytes());
-                }
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String nombreUsuarioChofer = request.getParameter("nombreUsuario");
+        String nombreUsuarioAdministrador = (String) session.getAttribute("nombreUsuario");
+        Chofer chofer = null;
 
-                return chofer;
+        try {
+            Optional<AdministradorSucursal> administradorOptional = administradorSucursalServicio
+                    .obtenerAdministradorSucursalPorNombreUsuario(nombreUsuarioAdministrador);
+            Optional<Chofer> choferActualOptional = choferServicio.obtenerChoferPorNombreUsuario(nombreUsuarioChofer);
+
+            if (administradorOptional.isEmpty() || choferActualOptional.isEmpty()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "No se encontró el chofer que desea editar.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+                return;
+            }
+
+            Sucursal sucursalAdministrador = administradorOptional.get().getSucursal();
+
+            if (choferActualOptional.get().getSucursal().getId() != sucursalAdministrador.getId()) {
+                session.setAttribute("tituloModal", "Error");
+                session.setAttribute("mensajeModal", "El chofer no pertenece a su sucursal.");
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+                return;
+            }
+
+            chofer = construirChofer(request, sucursalAdministrador);
+            choferServicio.actualizarChofer(chofer);
+            session.setAttribute("tituloModal", "Actualización exitosa");
+            session.setAttribute("mensajeModal", "El chofer fue actualizado correctamente.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+        } catch (DatosIncompletosException | EntidadYaRegistradaException | NoGuardadoEnBDException | SQLException e) {
+
+            if (chofer != null) {
+                session.setAttribute("mensajeFlash", e.getMessage());
+                datosFlashChoferServicio.guardarDatosFlash(request, chofer);
+                session.setAttribute("edicionChoferFlash", true);
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/editar_chofer?nombreUsuario="
+                        + URLEncoder.encode(nombreUsuarioChofer, StandardCharsets.UTF_8));
+            } else {
+                response.sendRedirect(request.getContextPath() + "/administrador_sucursal/listar_choferes");
+            }
+
+        }
+    }
+
+    private Chofer construirChofer(HttpServletRequest request, Sucursal sucursal)
+            throws IOException, ServletException {
+        Chofer chofer = new Chofer();
+        chofer.setUsuario(construirUsuario(request));
+        chofer.setSucursal(sucursal);
+        chofer.setNumeroLicencia(request.getParameter("numeroLicencia"));
+        chofer.setTipoLicencia(request.getParameter("tipoLicencia"));
+        chofer.setFechaVencimientoLicencia(convertirFecha(request.getParameter("fechaVencimientoLicencia")));
+        chofer.setSalarioBasePorViaje(convertirDecimal(request.getParameter("salarioBasePorViaje")));
+        Part fotografiaPart = request.getPart("fotografia");
+
+        if (fotografiaPart != null && fotografiaPart.getSize() > 0) {
+            chofer.setFotografia(fotografiaPart.getInputStream().readAllBytes());
         }
 
-        private Usuario construirUsuario(HttpServletRequest request) {
-                Usuario usuario = new Usuario();
-                usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
-                usuario.setNit(request.getParameter("nit"));
-                usuario.setDpi(request.getParameter("dpi"));
-                usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
-                usuario.setTelefono(request.getParameter("telefono"));
-                usuario.setDireccion(request.getParameter("direccion"));
-                usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
-                return usuario;
+        return chofer;
+    }
+
+    private Usuario construirUsuario(HttpServletRequest request) {
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
+        usuario.setNit(request.getParameter("nit"));
+        usuario.setDpi(request.getParameter("dpi"));
+        usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
+        usuario.setTelefono(request.getParameter("telefono"));
+        usuario.setDireccion(request.getParameter("direccion"));
+        usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
+        return usuario;
+    }
+
+    private void colocarDatosChoferEnRequest(HttpServletRequest request, Chofer chofer) {
+        Usuario usuario = chofer.getUsuario();
+        request.setAttribute("nombreUsuario", usuario.getNombreUsuario());
+        request.setAttribute("nit", usuario.getNit());
+        request.setAttribute("dpi", usuario.getDpi());
+        request.setAttribute("nombreCompleto", usuario.getNombreCompleto());
+        request.setAttribute("telefono", usuario.getTelefono());
+        request.setAttribute("direccion", usuario.getDireccion());
+        request.setAttribute("correoElectronico", usuario.getCorreoElectronico());
+        request.setAttribute("numeroLicencia", chofer.getNumeroLicencia());
+        request.setAttribute("tipoLicencia", chofer.getTipoLicencia());
+        request.setAttribute("fechaVencimientoLicencia", chofer.getFechaVencimientoLicencia());
+        request.setAttribute("salarioBasePorViaje", chofer.getSalarioBasePorViaje());
+        request.setAttribute("sucursal", chofer.getSucursal());
+    }
+
+    private LocalDate convertirFecha(String valor) {
+
+        if (valor == null || valor.isBlank()) {
+            return null;
         }
 
-        private void colocarDatosChoferEnRequest(HttpServletRequest request, Chofer chofer) {
-                Usuario usuario = chofer.getUsuario();
-                request.setAttribute("nombreUsuario", usuario.getNombreUsuario());
-                request.setAttribute("nit", usuario.getNit());
-                request.setAttribute("dpi", usuario.getDpi());
-                request.setAttribute("nombreCompleto", usuario.getNombreCompleto());
-                request.setAttribute("telefono", usuario.getTelefono());
-                request.setAttribute("direccion", usuario.getDireccion());
-                request.setAttribute("correoElectronico", usuario.getCorreoElectronico());
-                request.setAttribute("numeroLicencia", chofer.getNumeroLicencia());
-                request.setAttribute("tipoLicencia", chofer.getTipoLicencia());
-                request.setAttribute("fechaVencimientoLicencia", chofer.getFechaVencimientoLicencia());
-                request.setAttribute("salarioBasePorViaje", chofer.getSalarioBasePorViaje());
+        try {
+            return LocalDate.parse(valor);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private BigDecimal convertirDecimal(String valor) {
+
+        if (valor == null || valor.isBlank()) {
+            return null;
         }
 
-        private LocalDate convertirFecha(String valor) {
-
-                if (valor == null || valor.isBlank()) {
-                        return null;
-                }
-
-                try {
-                        return LocalDate.parse(valor);
-                } catch (DateTimeParseException e) {
-                        return null;
-                }
+        try {
+            return new BigDecimal(valor);
+        } catch (NumberFormatException e) {
+            return null;
         }
-
-        private BigDecimal convertirDecimal(String valor) {
-
-                if (valor == null || valor.isBlank()) {
-                        return null;
-                }
-
-                try {
-                        return new BigDecimal(valor);
-                } catch (NumberFormatException e) {
-                        return null;
-                }
-        }
+    }
 
 }

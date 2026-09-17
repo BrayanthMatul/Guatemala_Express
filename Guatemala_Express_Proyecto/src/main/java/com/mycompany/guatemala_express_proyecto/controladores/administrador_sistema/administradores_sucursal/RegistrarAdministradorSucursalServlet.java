@@ -29,122 +29,110 @@ import jakarta.servlet.http.HttpSession;
  * @author matul
  */
 @WebServlet(name = "RegistrarAdministradorSucursalServlet", urlPatterns = {
-                "/administrador_sistema/registrar_administrador_sucursal" })
+        "/administrador_sistema/registrar_administrador_sucursal" })
 public class RegistrarAdministradorSucursalServlet extends HttpServlet {
 
-        private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
-        private final SucursalServicio sucursalServicio = new SucursalServicio();
-        private final DatosFlashAdministradorSucursalServicio datosFlashAdministradorSucursalServicio = new DatosFlashAdministradorSucursalServicio();
+    private final AdministradorSucursalServicio administradorSucursalServicio = new AdministradorSucursalServicio();
+    private final SucursalServicio sucursalServicio = new SucursalServicio();
+    private final DatosFlashAdministradorSucursalServicio datosFlashAdministradorSucursalServicio = new DatosFlashAdministradorSucursalServicio();
 
-        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-        // + sign on the left to edit the code.">
-        /**
-         * Handles the HTTP <code>GET</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                HttpSession session = request.getSession(false);
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-                if (session != null) {
-                        datosFlashAdministradorSucursalServicio.colocarDatosFlash(request, session);
-                }
+        HttpSession session = request.getSession(false);
+        datosFlashAdministradorSucursalServicio.colocarDatosFlash(request, session);
 
-                try {
-                        request.setAttribute("sucursales", sucursalServicio.obtenerSucursales());
-                } catch (SQLException e) {
-                        request.setAttribute("tituloModal", "Error");
-                        request.setAttribute("mensajeModal", "No fue posible cargar las sucursales.");
-                }
-
-                request.getRequestDispatcher("/WEB-INF/views/administrador_sistema/administradores_sucursal/"
-                                + "registrar-administrador-sucursal.jsp").forward(request, response);
+        try {
+            request.setAttribute("sucursales", sucursalServicio.obtenerSucursales());
+        } catch (SQLException e) {
+            session.setAttribute("tituloModal", "Error");
+            session.setAttribute("mensajeModal", "No fue posible cargar las sucursales.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/lista_sucursales");
+            return;
         }
 
-        /**
-         * Handles the HTTP <code>POST</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-                AdministradorSucursal administradorSucursal = construirAdministradorSucursal(request);
+        request.getRequestDispatcher("/WEB-INF/views/administrador_sistema/administradores_sucursal/"
+                + "registrar-administrador-sucursal.jsp").forward(request, response);
+    }
 
-                HttpSession session = request.getSession();
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        AdministradorSucursal administradorSucursal = construirAdministradorSucursal(request);
+        HttpSession session = request.getSession();
 
-                try {
-                        boolean exito = administradorSucursalServicio
-                                        .crearAdministradorSucursal(
-                                                        administradorSucursal);
+        try {
+            boolean exito = administradorSucursalServicio.crearAdministradorSucursal(administradorSucursal);
 
-                        if (exito) {
-                                session.setAttribute("tituloModal", "Éxito");
-                                session.setAttribute("mensajeModal",
-                                                "Administrador de sucursal registrado exitosamente.");
-                                response.sendRedirect(request.getContextPath()
-                                                + "/administrador_sistema/lista_administradores_sucursal");
-                        }
+            if (exito) {
+                session.setAttribute("tituloModal", "Éxito");
+                session.setAttribute("mensajeModal", "Administrador de sucursal registrado exitosamente.");
+                response.sendRedirect(
+                        request.getContextPath() + "/administrador_sistema/lista_administradores_sucursal");
+            }
+        } catch (DatosIncompletosException | EntidadYaRegistradaException | NoGuardadoEnBDException | SQLException e) {
+            session.setAttribute("mensajeFlash", e.getMessage());
+            datosFlashAdministradorSucursalServicio.guardarDatosFlash(request, administradorSucursal);
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/registrar_administrador_sucursal");
+        }
+    }
 
-                } catch (DatosIncompletosException | EntidadYaRegistradaException | NoGuardadoEnBDException
-                                | SQLException e) {
+    private AdministradorSucursal construirAdministradorSucursal(HttpServletRequest request) {
+        Usuario usuario = construirUsuario(request);
+        Sucursal sucursal = new Sucursal();
 
-                        session.setAttribute("mensajeFlash", e.getMessage());
-                        datosFlashAdministradorSucursalServicio.guardarDatosFlash(request, administradorSucursal);
+        sucursal.setId(convertirEntero(request.getParameter("sucursalId")));
 
-                        response.sendRedirect(request.getContextPath()
-                                        + "/administrador_sistema/registrar_administrador_sucursal");
-                }
+        AdministradorSucursal administradorSucursal = new AdministradorSucursal();
+        administradorSucursal.setUsuario(usuario);
+        administradorSucursal.setSucursal(sucursal);
+
+        return administradorSucursal;
+    }
+
+    private Usuario construirUsuario(HttpServletRequest request) {
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
+        usuario.setNit(request.getParameter("nit"));
+        usuario.setDpi(request.getParameter("dpi"));
+        usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
+        usuario.setTelefono(request.getParameter("telefono"));
+        usuario.setDireccion(request.getParameter("direccion"));
+        usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
+        usuario.setContrasenia(request.getParameter("contrasenia"));
+
+        return usuario;
+    }
+
+    private int convertirEntero(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return 0;
         }
 
-        private AdministradorSucursal construirAdministradorSucursal(HttpServletRequest request) {
-
-                Usuario usuario = construirUsuario(request);
-                Sucursal sucursal = new Sucursal();
-
-                sucursal.setId(convertirEntero(request.getParameter("sucursalId")));
-
-                AdministradorSucursal administradorSucursal = new AdministradorSucursal();
-
-                administradorSucursal.setUsuario(usuario);
-                administradorSucursal.setSucursal(sucursal);
-
-                return administradorSucursal;
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            return 0;
         }
-
-        private Usuario construirUsuario(HttpServletRequest request) {
-                Usuario usuario = new Usuario();
-
-                usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
-                usuario.setNit(request.getParameter("nit"));
-                usuario.setDpi(request.getParameter("dpi"));
-                usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
-                usuario.setTelefono(request.getParameter("telefono"));
-                usuario.setDireccion(request.getParameter("direccion"));
-                usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
-                usuario.setContrasenia(request.getParameter("contrasenia"));
-
-                return usuario;
-        }
-
-        private int convertirEntero(String valor) {
-                if (valor == null || valor.isBlank()) {
-                        return 0;
-                }
-
-                try {
-                        return Integer.parseInt(valor);
-                } catch (NumberFormatException e) {
-                        return 0;
-                }
-        }
+    }
 
 }

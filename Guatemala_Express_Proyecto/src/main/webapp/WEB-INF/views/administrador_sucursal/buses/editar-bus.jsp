@@ -36,8 +36,7 @@
 
                     <c:choose>
 
-                        <c:when test="${empty requestScope.numeroPlaca
-                                        || empty requestScope.sucursal}">
+                        <c:when test="${empty requestScope.numeroPlaca || empty requestScope.sucursal}">
 
                             <h3 class="linea">
                                 No fue posible cargar el bus

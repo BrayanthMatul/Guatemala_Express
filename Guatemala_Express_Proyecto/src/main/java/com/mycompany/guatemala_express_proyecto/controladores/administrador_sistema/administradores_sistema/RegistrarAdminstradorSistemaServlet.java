@@ -27,81 +27,74 @@ import jakarta.servlet.http.HttpSession;
  * @author matul
  */
 @WebServlet(name = "RegistrarAdminstradorSistemaServlet", urlPatterns = {
-                "/administrador_sistema/registrar_administrador_sistema" })
+        "/administrador_sistema/registrar_administrador_sistema" })
 public class RegistrarAdminstradorSistemaServlet extends HttpServlet {
-        private final CrearUsuarioServicio registrarUsuarioServicio = new CrearUsuarioServicio();
-        private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
 
-        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-        // + sign on the left to edit the code.">
-        /**
-         * Handles the HTTP <code>GET</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
+    private final CrearUsuarioServicio registrarUsuarioServicio = new CrearUsuarioServicio();
+    private final DatosFlashPerfilServicio datosFlashPerfilServicio = new DatosFlashPerfilServicio();
 
-                HttpSession session = request.getSession(false);
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-                if (session != null) {
-                        datosFlashPerfilServicio.colocarDatosFlash(request, session);
-                }
+        HttpSession session = request.getSession();
+        datosFlashPerfilServicio.colocarDatosFlash(request, session);
 
-                request.getRequestDispatcher(
-                                "/WEB-INF/views/administrador_sistema/administradores_sistema/registrar-administrador-sistema.jsp")
-                                .forward(request, response);
+        request.getRequestDispatcher(
+                "/WEB-INF/views/administrador_sistema/administradores_sistema/registrar-administrador-sistema.jsp")
+                .forward(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        Usuario usuario = construirUsuario(request);
+        HttpSession session = request.getSession();
+        String nombreUsuario = request.getParameter("nombreCompleto");
+
+        try {
+            registrarUsuarioServicio.crearUsuario(usuario);
+            session.setAttribute("tituloModal", "Administrador guardado");
+            session.setAttribute("mensajeModal", "Administrador " + nombreUsuario + " registrado correctamente.");
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/lista_administradores_sistema");
+        } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException | EntidadYaRegistradaException e) {
+            session.setAttribute("mensajeFlash", e.getMessage());
+            datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
+            response.sendRedirect(request.getContextPath() + "/administrador_sistema/registrar_administrador_sistema");
         }
+    }
 
-        /**
-         * Handles the HTTP <code>POST</code> method.
-         *
-         * @param request  servlet request
-         * @param response servlet response
-         * @throws ServletException if a servlet-specific error occurs
-         * @throws IOException      if an I/O error occurs
-         */
-        @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                        throws ServletException, IOException {
-
-                Usuario usuario = construirUsuario(request);
-                HttpSession session = request.getSession();
-                String nombreUsuario = request.getParameter("nombreCompleto");
-
-                try {
-                        registrarUsuarioServicio.crearUsuario(usuario);
-                        session.setAttribute("tituloModal", "Administrador guardado");
-                        session.setAttribute("mensajeModal",
-                                        "Administrador " + nombreUsuario + " registrado correctamente.");
-                        response.sendRedirect(request.getContextPath()
-                                        + "/administrador_sistema/lista_administradores_sistema");
-                } catch (DatosIncompletosException | NoGuardadoEnBDException | SQLException
-                                | EntidadYaRegistradaException e) {
-                        session.setAttribute("mensajeFlash", e.getMessage());
-                        datosFlashPerfilServicio.guardarDatosFlash(request, usuario);
-
-                        response.sendRedirect(request.getContextPath()
-                                        + "/administrador_sistema/registrar_administrador_sistema");
-                }
-        }
-
-        private Usuario construirUsuario(HttpServletRequest request) {
-                Usuario usuario = new Usuario();
-                usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
-                usuario.setNit(request.getParameter("nit"));
-                usuario.setDpi(request.getParameter("dpi"));
-                usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
-                usuario.setTelefono(request.getParameter("telefono"));
-                usuario.setDireccion(request.getParameter("direccion"));
-                usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
-                usuario.setContrasenia(request.getParameter("contrasenia"));
-                usuario.setRol(Rol.ADMINISTRADOR_SISTEMA);
-                return usuario;
-        }
+    private Usuario construirUsuario(HttpServletRequest request) {
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
+        usuario.setNit(request.getParameter("nit"));
+        usuario.setDpi(request.getParameter("dpi"));
+        usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
+        usuario.setTelefono(request.getParameter("telefono"));
+        usuario.setDireccion(request.getParameter("direccion"));
+        usuario.setCorreoElectronico(request.getParameter("correoElectronico"));
+        usuario.setContrasenia(request.getParameter("contrasenia"));
+        usuario.setRol(Rol.ADMINISTRADOR_SISTEMA);
+        return usuario;
+    }
 
 }

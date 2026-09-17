@@ -41,8 +41,9 @@ public class ConsultarPerfilServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
         HttpSession session = request.getSession();
+
+        String nombreUsuario = (String) request.getSession().getAttribute("nombreUsuario");
         Object tituloModal = session.getAttribute("tituloModalFlash");
         Object mensajeModal = session.getAttribute("mensajeModalFlash");
 

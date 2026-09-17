@@ -17,11 +17,6 @@ import jakarta.servlet.http.HttpSession;
 public class DatosFlashChoferServicio {
 
     public void guardarDatosFlash(HttpServletRequest request, Chofer chofer) {
-
-        if (chofer == null) {
-            return;
-        }
-
         HttpSession session = request.getSession();
         Usuario usuario = chofer.getUsuario();
 
@@ -39,14 +34,10 @@ public class DatosFlashChoferServicio {
         session.setAttribute("tipoLicenciaFlash", chofer.getTipoLicencia());
         session.setAttribute("fechaVencimientoLicenciaFlash", chofer.getFechaVencimientoLicencia());
         session.setAttribute("salarioBasePorViajeFlash", chofer.getSalarioBasePorViaje());
+        session.setAttribute("sucursal", chofer.getSucursal());
     }
 
     public void colocarDatosFlash(HttpServletRequest request, HttpSession session) {
-
-        if (session == null) {
-            return;
-        }
-
         moverARequest(request, session, "mensajeFlash", "mensaje");
         moverARequest(request, session, "nombreUsuarioFlash", "nombreUsuario");
         moverARequest(request, session, "nitFlash", "nit");
@@ -59,6 +50,7 @@ public class DatosFlashChoferServicio {
         moverARequest(request, session, "tipoLicenciaFlash", "tipoLicencia");
         moverARequest(request, session, "fechaVencimientoLicenciaFlash", "fechaVencimientoLicencia");
         moverARequest(request, session, "salarioBasePorViajeFlash", "salarioBasePorViaje");
+        moverARequest(request, session, "sucursal", "sucursal");
     }
 
     private void moverARequest(HttpServletRequest request, HttpSession session, String nombreSession,
