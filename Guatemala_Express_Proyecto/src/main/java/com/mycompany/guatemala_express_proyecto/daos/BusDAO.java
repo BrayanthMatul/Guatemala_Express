@@ -238,6 +238,47 @@ public class BusDAO {
         return buses;
     }
 
+    public List<Bus> obtenerBusesActivosPorSucursal(int idSucursal) throws SQLException {
+        List<Bus> buses = new ArrayList<>();
+
+        String sqlSelect = "SELECT b.numero_placa, b.id_sucursal, b.marca, b.modelo, b.anio_fabricacion, b.capacidad_pasajeros, b.kilometraje_actual, b.estado, b.fotografia, b.estado_operativo, s.nombre ";
+        String sqlFrom = "FROM bus b ";
+        String sqlInnerWhere = "INNER JOIN sucursal s ON b.id_sucursal = s.id WHERE b.id_sucursal = ? AND b.estado = TRUE";
+        String sql = sqlSelect + sqlFrom + sqlInnerWhere;
+
+        try (Connection coneccion = ConexionDB.getConeccion();
+                PreparedStatement preparedStatement = coneccion.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, idSucursal);
+
+            try (ResultSet result = preparedStatement.executeQuery()) {
+                while (result.next()) {
+
+                    Sucursal sucursal = new Sucursal();
+                    sucursal.setId(result.getInt("id_sucursal"));
+                    sucursal.setNombre(result.getString("nombre"));
+
+                    Bus bus = new Bus();
+                    bus.setNumeroPlaca(result.getString("numero_placa"));
+                    bus.setSucursal(sucursal);
+                    bus.setMarca(result.getString("marca"));
+                    bus.setModelo(result.getString("modelo"));
+                    bus.setAnioFabricacion(result.getInt("anio_fabricacion"));
+                    bus.setCapacidadPasajeros(result.getInt("capacidad_pasajeros"));
+                    bus.setKilometrajeActual(result.getBigDecimal("kilometraje_actual"));
+                    bus.setEstado(result.getBoolean("estado"));
+                    bus.setFotografia(result.getBytes("fotografia"));
+                    bus.setEstadoOperativo(EstadoOperativo.valueOf(result.getString("estado_operativo")));
+                    buses.add(bus);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener los buses activos de la sucursal: " + e.getMessage());
+        }
+
+        return buses;
+    }
+
     public boolean sumarKilometrajeBus(String numeroPlaca, BigDecimal kilometrajeRecorrido) throws SQLException {
         String sql = "UPDATE bus SET kilometraje_actual = kilometraje_actual + ? WHERE numero_placa = ?";
 

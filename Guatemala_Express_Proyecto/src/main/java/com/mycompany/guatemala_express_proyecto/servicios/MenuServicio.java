@@ -79,7 +79,7 @@ public class MenuServicio {
                                 "/administrador_sistema/activar_desactivar_administrador_sistema");
                 menu.add(administradoresSistema);
 
-                MenuItem sucursales = new MenuItem("Sucursales", "/administrador_sistema/registrar_sucursales");
+                MenuItem sucursales = new MenuItem("Sucursales", "/administrador_sistema/registrar_sucursal");
                 sucursales.agregarSubOpcion("Registrar sucursal", "/administrador_sistema/registrar_sucursal");
                 sucursales.agregarSubOpcion("Listar sucursales", "/administrador_sistema/lista_sucursales");
                 menu.add(sucursales);
@@ -94,7 +94,7 @@ public class MenuServicio {
                 menu.add(administradoresSucursal);
 
                 MenuItem configuraciones = new MenuItem("Configurar monto de depreciación",
-                                "/administrador_sistema/configurar_monto_depreciacion");
+                                "/administrador_sistema/tarifa_depreciacion");
                 menu.add(configuraciones);
 
                 MenuItem reportes = new MenuItem("Reportes", "/reportes");
@@ -152,7 +152,11 @@ public class MenuServicio {
                 menu.add(viajesPrivados);
 
                 MenuItem registraGastoTaller = new MenuItem("Registrar gasto de taller",
-                                "/administrador_sucursal/registrar_gasto_taller");
+                                "/administrador_sucursal/gasto_taller");
+                registraGastoTaller.agregarSubOpcion("Registrar gasto de taller",
+                                "/administrador_sucursal/gasto_taller");
+                registraGastoTaller.agregarSubOpcion("Listar gastos de taller",
+                                "/administrador_sucursal/listar_gastos_taller");
                 menu.add(registraGastoTaller);
 
                 MenuItem reportes = new MenuItem("Reportes", "/administrador_sucursal/reportes");

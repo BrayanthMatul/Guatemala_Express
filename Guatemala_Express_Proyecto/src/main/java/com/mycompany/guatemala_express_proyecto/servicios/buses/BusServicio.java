@@ -170,6 +170,10 @@ public class BusServicio {
         return true;
     }
 
+    public List<Bus> obtenerBusesActivosPorSucursal(int idSucursal) throws SQLException {
+        return busDAO.obtenerBusesActivosPorSucursal(idSucursal);
+    }
+
     private boolean datosVacios(Bus bus, boolean revisarFotografia, boolean revisarKilometraje) {
 
         if (bus == null) {

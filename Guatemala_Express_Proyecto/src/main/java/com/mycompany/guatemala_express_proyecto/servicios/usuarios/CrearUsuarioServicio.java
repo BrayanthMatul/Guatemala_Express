@@ -4,7 +4,6 @@
  */
 package com.mycompany.guatemala_express_proyecto.servicios.usuarios;
 
-import com.mycompany.guatemala_express_proyecto.servicios.usuarios.VerificadorDatosUsuarioServicio;
 import java.sql.SQLException;
 
 import com.mycompany.guatemala_express_proyecto.daos.UsuarioDAO;

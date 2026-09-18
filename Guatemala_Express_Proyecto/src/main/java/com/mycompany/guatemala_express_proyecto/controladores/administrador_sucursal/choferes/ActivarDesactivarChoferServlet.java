@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import com.mycompany.guatemala_express_proyecto.exceptions.DatosIncompletosException;
-import com.mycompany.guatemala_express_proyecto.exceptions.NoGuardadoEnBDException;
 import com.mycompany.guatemala_express_proyecto.modelos.AdministradorSucursal;
 import com.mycompany.guatemala_express_proyecto.modelos.Chofer;
 import com.mycompany.guatemala_express_proyecto.modelos.Sucursal;
