@@ -11,8 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <jsp:include page="/includes/recursos.jsp"/>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"> </script>
+        <jsp:include page="/includes/leaflet.jsp"/>
     </head>
     <body>
         <jsp:include page="/includes/header.jsp"/>

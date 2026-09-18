@@ -100,7 +100,7 @@ public class AdministradorSucursalDAO {
     public Optional<AdministradorSucursal> obtenerAdministradorSucursalPorNombreUsuario(
             String nombreUsuario) throws SQLException {
 
-        String sqlSelect = "SELECT u.nombre_usuario, u.nit, u.dpi, u.nombre_completo, u.telefono, u.direccion, u.correo_electronico, u.estado, s.id, s.nombre ";
+        String sqlSelect = "SELECT u.nombre_usuario, u.nit, u.dpi, u.nombre_completo, u.telefono, u.direccion, u.correo_electronico, u.estado, s.id, s.nombre, s.latitud, s.longitud ";
         String sqlFrom = "FROM administrador_sucursal ";
         String sqlJoin = "INNER JOIN usuario u ON administrador_sucursal.nombre_usuario = u.nombre_usuario INNER JOIN sucursal s ON administrador_sucursal.sucursal_id = s.id ";
         String sqlWhere = "WHERE u.nombre_usuario = ?";
@@ -128,6 +128,8 @@ public class AdministradorSucursalDAO {
 
                     sucursal.setId(result.getInt("id"));
                     sucursal.setNombre(result.getString("nombre"));
+                    sucursal.setLatitud(result.getBigDecimal("latitud"));
+                    sucursal.setLongitud(result.getBigDecimal("longitud"));
 
                     AdministradorSucursal administradorSucursal = new AdministradorSucursal();
 
